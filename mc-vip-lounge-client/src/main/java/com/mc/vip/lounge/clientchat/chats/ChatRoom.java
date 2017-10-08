@@ -4,6 +4,6 @@ import java.util.List;
 
 public class ChatRoom {
 
-    private List <String>
+    private List <String> list;
 
 }

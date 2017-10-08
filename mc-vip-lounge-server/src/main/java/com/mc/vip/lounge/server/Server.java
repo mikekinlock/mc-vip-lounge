@@ -113,10 +113,7 @@ public class Server {
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
                 writers.add(out);
-
-                JsonObject json = jsonBuilder.build();
-                out.print(json);
-
+                
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
                 while (true) {

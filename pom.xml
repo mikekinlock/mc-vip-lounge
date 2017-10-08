@@ -12,7 +12,7 @@
   <url>http://maven.apache.org</url>
 
   <modules>
-    <module>mc-vip-lounge-client</module>
+    <module>mc-vip-lounge-groupChat</module>
     <module>mc-vip-lounge-server</module>
   </modules>
 

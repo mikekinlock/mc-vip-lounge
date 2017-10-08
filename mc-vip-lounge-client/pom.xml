@@ -10,9 +10,9 @@
   </parent>
 
   <groupId>com.mc.vip.lounge</groupId>
-  <artifactId>mc-vip-lounge-client</artifactId>
+  <artifactId>mc-vip-lounge-groupChat</artifactId>
   <version>1.0.0</version>
-  <name>mc-vip-lounge-client</name>
+  <name>mc-vip-lounge-groupChat</name>
 
   <url>http://maven.apache.org</url>
 

@@ -1,17 +1,20 @@
 package com.mc.vip.lounge.clientchat.gui;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.PrintWriter;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 public class ClientGraficalInterface {
 
     private static ClientGraficalInterface instance;
 
-    private JFrame frame = new JFrame("Chatter");
+    private JFrame frame = new JFrame("Chat");
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
+    private JTextArea test = new JTextArea(8, 40);
+    private JTextArea test1 = new JTextArea(8, 40);
 
     private ClientGraficalInterface(){
         textField.setEditable(false);
@@ -19,7 +22,15 @@ public class ClientGraficalInterface {
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
         frame.pack();
-    };
+    }
+
+    public String getUserName() {
+        return JOptionPane.showInputDialog(
+                frame,
+                "Choose a screen name:",
+                "Screen name selection",
+                JOptionPane.PLAIN_MESSAGE);
+    }
 
     public static ClientGraficalInterface getInstance(){
         if (instance == null){
@@ -28,12 +39,9 @@ public class ClientGraficalInterface {
         return instance;
     }
 
-
-
     public JFrame getFrame() {
         return frame;
     }
-
 
     public JTextField getTextField() {
         return textField;
@@ -41,15 +49,6 @@ public class ClientGraficalInterface {
 
     public JTextArea getMessageArea() {
         return messageArea;
-    }
-
-    /** Prompt for and return the desired screen name. */
-    public String getUserName() {
-        return JOptionPane.showInputDialog(
-                frame,
-                "Choose a screen name:",
-                "Screen name selection",
-                JOptionPane.PLAIN_MESSAGE);
     }
 
 }

@@ -1,6 +1,4 @@
-package com.mc.vip.lounge.clientchat.chats;
-
-import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
+package com.mc.vip.lounge.clientchat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.*;
+import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
 
 /** A simple Swing-based client for the chat server. Graphically it is a gui with a text field for entering messages
  * and a textarea to see the whole dialog.
@@ -21,9 +19,9 @@ import javax.swing.*;
  * to start sending the server arbitrary strings to be broadcast to all chatters connected to the server. When the
  * server sends a line beginning with "MESSAGE " then all characters following this string should be displayed in its
  * message area. */
-public class GroupChat {
+public class MessageRendering {
 
-    private Logger CLIENT_GROUP_LOG = Logger.getLogger(GroupChat.class.getName());
+    private Logger CLIENT_GROUP_LOG = Logger.getLogger(MessageRendering.class.getName());
 
     private BufferedReader in;
     private PrintWriter out;
@@ -32,7 +30,7 @@ public class GroupChat {
     /** Constructs the client by laying out the GUI and registering a listener with the textfield so that pressing
      * Return in the listener sends the textfield contents to the server. Note however that the textfield is initially
      * NOT editable, and only becomes editable AFTER the client receives the NAMEACCEPTED message from the server. */
-    public GroupChat(final BufferedReader readerIn, final PrintWriter outWriter, final ClientGraficalInterface gui) {
+    public MessageRendering(final BufferedReader readerIn, final PrintWriter outWriter, final ClientGraficalInterface gui) {
         this.in = readerIn;
         this.out = outWriter;
         this.gui = gui;
@@ -54,7 +52,7 @@ public class GroupChat {
                     out.println(gui.getUserName());
                 } else if (line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
-                } else if (line.startsWith("MESSAGE")) {
+                } else if (line.startsWith("u")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
                 } else if (line.startsWith("CLOSE")) {
                     runClient = false;

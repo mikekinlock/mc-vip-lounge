@@ -1,6 +1,5 @@
 package com.mc.vip.lounge.clientchat.controller;
 
-import com.mc.vip.lounge.clientchat.chats.GroupChat;
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
 
 import javax.swing.*;
@@ -35,8 +34,8 @@ public class ClientChatController {
                     socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            GroupChat groupChat = new GroupChat(in,out,gui);
-            groupChat.listenGroupChat();
+            MessageRendering messageRendering = new MessageRendering(in,out,gui);
+            messageRendering.listenGroupChat();
 
         } catch (Exception e) {
             CLIENT_LOG.log(Level.WARNING, "Problems by running the client: ", e);

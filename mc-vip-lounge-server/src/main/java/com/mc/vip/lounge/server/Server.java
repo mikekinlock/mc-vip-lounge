@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A multithreaded chat room server.  When a client connects the
@@ -52,6 +54,9 @@ public class Server {
      * and broadcasting its messages.
      */
     public static class Handler extends Thread {
+
+        private Logger SERVER_LOG = Logger.getLogger(Server.Handler.class.getName());
+
         private String name;
         private Socket socket;
         private BufferedReader in;
@@ -115,7 +120,7 @@ public class Server {
                     }
                 }
             } catch (IOException e) {
-                System.out.println(e);
+                SERVER_LOG.log(Level.WARNING,"Not able to read from Reader: ",e);
             } finally {
                 // This client is going down!  Remove its name and its print
                 // writer from the sets, and close its socket.

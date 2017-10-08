@@ -6,8 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  * A multithreaded chat room server.  When a client connects the
@@ -40,7 +45,7 @@ public class Server {
      * so that we can check that new clients are not registering name
      * already in use.
      */
-    private static HashSet<String> names = new HashSet<>();
+    private static Set<String> names = new HashSet<>();
 
     /**
      * The set of all the print writers for all the clients.  This
@@ -80,6 +85,7 @@ public class Server {
          */
         public void run() {
             try {
+                JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
                 in = new BufferedReader(new InputStreamReader(
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
@@ -107,6 +113,9 @@ public class Server {
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
                 writers.add(out);
+
+                JsonObject json = jsonBuilder.build();
+                out.print(json);
 
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.

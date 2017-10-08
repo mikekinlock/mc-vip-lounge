@@ -1,4 +1,4 @@
-package mc.vip.network.client;
+package com.mc.vip.lounge.network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

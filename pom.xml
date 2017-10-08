@@ -1,17 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.mc.vip.lounge</groupId>
   <artifactId>mc-vip-lounge</artifactId>
-  <packaging>pom</packaging>
   <version>1.0.0</version>
+
+  <packaging>pom</packaging>
   <name>mc-vip-lounge</name>
 
   <url>http://maven.apache.org</url>
 
   <modules>
-    <module>client</module>
-    <module>server</module>
+    <module>mc-vip-lounge-client</module>
+    <module>mc-vip-lounge-server</module>
   </modules>
 
   <dependencies>
@@ -22,4 +24,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -1,10 +1,10 @@
-package mc.vip.network.main;
+package com.mc.vip.lounge.main;
 
 import java.net.ServerSocket;
 
-import mc.vip.network.server.Server;
+import com.mc.vip.lounge.server.Server;
 
-public class Main {
+public class ServerMain {
 
     /**
      * The appplication main method, which just listens on a port and

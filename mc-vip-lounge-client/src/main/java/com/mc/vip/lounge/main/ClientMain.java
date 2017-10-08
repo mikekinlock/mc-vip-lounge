@@ -1,10 +1,10 @@
-package mc.vip.network.main;
+package com.mc.vip.lounge.main;
 
 import javax.swing.*;
 
-import mc.vip.network.client.Client;
+import com.mc.vip.lounge.network.Client;
 
-public class Main {
+public class ClientMain {
 
     /**
      * Runs the client as an application with a closeable frame.

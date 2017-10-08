@@ -1,4 +1,4 @@
-package mc.vip.network.server;
+package com.mc.vip.lounge.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class Server {
      * The set of all the print writers for all the clients.  This
      * set is kept so we can easily broadcast messages.
      */
-    private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
+    private static HashSet<PrintWriter> writers = new HashSet<>();
 
     /**
      * A handler thread class.  Handlers are spawned from the listening

@@ -1,5 +1,7 @@
 .svn
 .idea
 **/target
-*/bin
 *.iml
+out/
+META-INF/**
+**/META-INF/**

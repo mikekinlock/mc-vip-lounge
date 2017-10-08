@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,8 +118,9 @@ public class Server {
 
                 jsonBuilder.add(
                         "users",
-                        names.stream()
-                            .toArray(String[]::new).toString()
+                        Arrays.toString(
+                                names.stream()
+                            .toArray(String[]::new))
                 );
 
                 JsonObject json = jsonBuilder.build();

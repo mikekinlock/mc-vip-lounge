@@ -1,12 +1,18 @@
 package com.mc.vip.lounge.clientchat.controller;
 
+import static javax.json.Json.createReader;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
 
@@ -39,6 +45,7 @@ public class MessageRendering {
 
 
     public void listenGroupChat(){
+
         try {
 
             addGroupChatListener(out);
@@ -54,15 +61,19 @@ public class MessageRendering {
                     gui.getTextField().setEditable(true);
                 } else if (line.startsWith("MESSAGE")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
+                } else if (line.startsWith("{\"users\":")){
+                    JsonReader jsonReader = createReader(new StringReader(line));
+                    JsonObject jsonObject = jsonReader.readObject();
+                    String [] users = jsonObject.getString("users").split(",");
+                    jsonReader.close();
                 } else if (line.startsWith("CLOSE")) {
                     runClient = false;
-                } else if (line.startsWith("{users")){
-
                 }
             }
         } catch (IOException e) {
             CLIENT_GROUP_LOG.log(Level.WARNING,"Not able to read from input: ",e);
         }
+
     }
 
 

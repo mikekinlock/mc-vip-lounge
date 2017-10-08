@@ -6,10 +6,18 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**dass
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+/**
+
  * A multithreaded chat room server.  When a client connects the
  * server requests a screen name by sending the client the
  * text "SUBMITNAME", and keeps requesting a name until
@@ -40,7 +48,7 @@ public class Server {
      * so that we can check that new clients are not registering name
      * already in use.
      */
-    private static HashSet<String> names = new HashSet<>();
+    private static List<String> names = new CopyOnWriteArrayList<>();
 
     /**
      * The set of all the print writers for all the clients.  This
@@ -80,6 +88,7 @@ public class Server {
          */
         public void run() {
             try {
+                JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
                 in = new BufferedReader(new InputStreamReader(
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
@@ -94,11 +103,10 @@ public class Server {
                     if (name == null) {
                         return;
                     }
-                    synchronized (names) {
-                        if (!names.contains(name)) {
-                            names.add(name);
-                            break;
-                        }
+
+                    if (!names.contains(name)) {
+                        names.add(name);
+                        break;
                     }
                 }
 
@@ -107,6 +115,16 @@ public class Server {
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
                 writers.add(out);
+
+                jsonBuilder.add(
+                        "users",
+                        names.stream()
+                            .toArray(String[]::new).toString()
+                );
+
+                JsonObject json = jsonBuilder.build();
+                out.println(json.toString());
+
 
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.

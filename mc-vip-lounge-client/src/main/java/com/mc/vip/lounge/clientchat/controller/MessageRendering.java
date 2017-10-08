@@ -52,10 +52,12 @@ public class MessageRendering {
                     out.println(gui.getUserName());
                 } else if (line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
-                } else if (line.startsWith("u")) {
+                } else if (line.startsWith("MESSAGE")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
                 } else if (line.startsWith("CLOSE")) {
                     runClient = false;
+                } else if (line.startsWith("{users")){
+
                 }
             }
         } catch (IOException e) {

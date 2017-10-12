@@ -92,6 +92,7 @@ public class Server {
                 in = new BufferedReader(new InputStreamReader(
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
+                boolean newUserAdded;
 
                 // Request a name from this client.  Keep requesting until
                 // a name is submitted that is not already used.  Note that
@@ -106,6 +107,7 @@ public class Server {
 
                     if (!names.contains(name)) {
                         names.add(name);
+                        newUserAdded = true;
                         break;
                     }
                 }
@@ -116,20 +118,24 @@ public class Server {
                 out.println("NAMEACCEPTED");
                 writers.add(out);
 
-                jsonBuilder.add(
-                        "users",
-                        Arrays.toString(
-                                names.stream()
-                            .toArray(String[]::new))
-                );
-
-                JsonObject json = jsonBuilder.build();
-                out.println(json.toString());
-
-
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
                 while (true) {
+                    if (newUserAdded){
+                        jsonBuilder.add(
+                                "users",
+                                Arrays.toString(
+                                        names.stream()
+                                                .toArray(String[]::new))
+                        );
+
+                        JsonObject json = jsonBuilder.build();
+                        out.println(json.toString());
+                        writers.add(out);
+
+                        newUserAdded = false;
+                    }
+
                     String input = in.readLine();
                     if (input == null) {
                         return;

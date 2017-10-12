@@ -43,11 +43,9 @@ public class MessageRendering {
     }
 
 
-
     public void listenGroupChat(){
 
         try {
-
             addGroupChatListener(out);
 
             boolean runClient = true;

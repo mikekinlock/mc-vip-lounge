@@ -16,51 +16,31 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-/**
-
- * A multithreaded chat room server.  When a client connects the
- * server requests a screen name by sending the client the
- * text "SUBMITNAME", and keeps requesting a name until
- * a unique one is received.  After a client submits a unique
- * name, the server acknowledges with "NAMEACCEPTED".  Then
- * all messages from that client will be broadcast to all other
- * clients that have submitted a unique screen name.  The
- * broadcast messages are prefixed with "MESSAGE ".
+/** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the
+ * text "SUBMITNAME", and keeps requesting a name until a unique one is received. After a client submits a unique name,
+ * the server acknowledges with "NAMEACCEPTED". Then all messages from that client will be broadcast to all other
+ * clients that have submitted a unique screen name. The broadcast messages are prefixed with "MESSAGE ".
  *
- * Because this is just a teaching example to illustrate a simple
- * chat server, there are a few features that have been left out.
- * Two are very useful and belong in production code:
+ * Because this is just a teaching example to illustrate a simple chat server, there are a few features that have been
+ * left out. Two are very useful and belong in production code:
  *
- *     1. The protocol should be enhanced so that the client can
- *        send clean disconnect messages to the server.
+ * 1. The protocol should be enhanced so that the client can send clean disconnect messages to the server.
  *
- *     2. The server should do some logging.
- */
+ * 2. The server should do some logging. */
 public class Server {
 
-    /**
-     * The port that the server listens on.
-     */
+    /** The port that the server listens on. */
     public static final int PORT = 9001;
 
-    /**
-     * The set of all names of clients in the chat room.  Maintained
-     * so that we can check that new clients are not registering name
-     * already in use.
-     */
+    /** The set of all names of clients in the chat room. Maintained so that we can check that new clients are not
+     * registering name already in use. */
     private static List<String> names = new CopyOnWriteArrayList<>();
 
-    /**
-     * The set of all the print writers for all the clients.  This
-     * set is kept so we can easily broadcast messages.
-     */
+    /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
     private static HashSet<PrintWriter> writers = new HashSet<>();
 
-    /**
-     * A handler thread class.  Handlers are spawned from the listening
-     * loop and are responsible for a dealing with a single client
-     * and broadcasting its messages.
-     */
+    /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a
+     * single client and broadcasting its messages. */
     public static class Handler extends Thread {
 
         private Logger SERVER_LOG = Logger.getLogger(Server.Handler.class.getName());
@@ -71,21 +51,15 @@ public class Server {
         private PrintWriter out;
         private boolean closed;
 
-        /**
-         * Constructs a handler thread, squirreling away the socket.
-         * All the interesting work is done in the run method.
-         */
+        /** Constructs a handler thread, squirreling away the socket. All the interesting work is done in the run
+         * method. */
         public Handler(Socket socket) {
             this.socket = socket;
         }
 
-        /**
-         * Services this thread's client by repeatedly requesting a
-         * screen name until a unique one has been submitted, then
-         * acknowledges the name and registers the output stream for
-         * the client in a global set, then repeatedly gets inputs and
-         * broadcasts them.
-         */
+        /** Services this thread's client by repeatedly requesting a screen name until a unique one has been submitted,
+         * then acknowledges the name and registers the output stream for the client in a global set, then repeatedly
+         * gets inputs and broadcasts them. */
         public void run() {
             try {
                 JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
@@ -94,8 +68,8 @@ public class Server {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 boolean newUserAdded;
 
-                // Request a name from this client.  Keep requesting until
-                // a name is submitted that is not already used.  Note that
+                // Request a name from this client. Keep requesting until
+                // a name is submitted that is not already used. Note that
                 // checking for the existence of a name and adding the name
                 // must be done while locking the set of names.
                 while (true) {
@@ -121,18 +95,20 @@ public class Server {
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
                 while (true) {
-                    if (newUserAdded){
+
+                    if (newUserAdded) {
                         jsonBuilder.add(
                                 "users",
                                 Arrays.toString(
                                         names.stream()
-                                                .toArray(String[]::new))
-                        );
+                                                .toArray(String[]::new)));
 
                         JsonObject json = jsonBuilder.build();
                         out.println(json.toString());
                         writers.add(out);
-
+                        for (PrintWriter writer : writers) {
+                            writer.println(json.toString());
+                        }
                         newUserAdded = false;
                     }
 
@@ -145,9 +121,9 @@ public class Server {
                     }
                 }
             } catch (IOException e) {
-                SERVER_LOG.log(Level.WARNING,"Not able to read from Reader: ",e);
+                SERVER_LOG.log(Level.WARNING, "Not able to read from Reader: ", e);
             } finally {
-                // This client is going down!  Remove its name and its print
+                // This client is going down! Remove its name and its print
                 // writer from the sets, and close its socket.
                 if (name != null) {
                     names.remove(name);
@@ -163,7 +139,7 @@ public class Server {
             }
         }
 
-        public boolean isClosed(){
+        public boolean isClosed() {
             return closed;
         }
     }

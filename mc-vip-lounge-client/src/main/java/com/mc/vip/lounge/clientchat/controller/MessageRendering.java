@@ -18,6 +18,7 @@ import javax.json.JsonReader;
 
 import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
+import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
 /** A simple Swing-based client for the chat server. Graphically it is a gui with a text field for entering messages
  * and a textarea to see the whole dialog.
@@ -58,7 +59,9 @@ public class MessageRendering {
                 String line = in.readLine();
                 boolean hasLine = line != null;
                 if (hasLine && line.startsWith("SUBMITNAME")) {
-                    out.println(gui.getUserName());
+                    String name = gui.getUserName();
+                    CurrentClient.setName(name);
+                    out.println(name);
                 } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
                 } else if (hasLine && line.startsWith("MESSAGE")) {

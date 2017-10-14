@@ -1,6 +1,7 @@
 package com.mc.vip.lounge.clientchat.db.user.impl;
 
 import com.mc.vip.lounge.clientchat.db.user.OnlineUserList;
+import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
 import javax.swing.DefaultListModel;
 
@@ -18,7 +19,9 @@ public class OnlineUserListImpl implements OnlineUserList{
     public void updateUserList(String[] users) {
         onlineList.removeAllElements();
         for(String user : users){
-            onlineList.addElement(user);
+            if (!user.equals(CurrentClient.getName())){
+                onlineList.addElement(user);
+            }
         }
     }
 

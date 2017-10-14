@@ -1,10 +1,8 @@
 package com.mc.vip.lounge.clientchat.gui;
 
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
+import com.mc.vip.lounge.clientchat.model.ChatUsers;
+
+import javax.swing.*;
 
 public class ClientGraficalInterface {
 
@@ -13,14 +11,15 @@ public class ClientGraficalInterface {
     private JFrame frame = new JFrame("Chat");
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
-    private JTextArea test = new JTextArea(8, 40);
-    private JTextArea test1 = new JTextArea(8, 40);
+    //List to show currently all users
+    private JList<ChatUsers> list = new JList();
 
     private ClientGraficalInterface(){
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
+        frame.getContentPane().add(list,"");
         frame.pack();
     }
 

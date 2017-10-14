@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,11 +63,14 @@ public class MessageRendering {
                     gui.getTextField().setEditable(true);
                 } else if (hasLine && line.startsWith("MESSAGE")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
-                } else if (hasLine && line.startsWith("{\"users\":")){
-                    JsonReader jsonReader = createReader(new StringReader(line));
-                    JsonObject jsonObject = jsonReader.readObject();
-                    String [] users = jsonObject.getString("users").split(",");
-                    jsonReader.close();
+                } else if (hasLine && line.startsWith("USERS:")){
+                    String usersString = line.substring(6);
+                    List<String> userList = Arrays.asList(usersString.split("\\s*,\\s*"));
+                    System.out.println(userList.toString());
+                    //JsonReader jsonReader = createReader(new StringReader(line));
+                    //JsonObject jsonObject = jsonReader.readObject();
+                    //String [] users = jsonObject.getString("users").split(",");
+                    //jsonReader.close();
                 } else if (hasLine && line.startsWith("CLOSE")) {
                     runClient = false;
                 }

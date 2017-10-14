@@ -7,16 +7,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonArrayBuilder;
 
 /** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the
  * text "SUBMITNAME", and keeps requesting a name until a unique one is received. After a client submits a unique name,
@@ -64,11 +68,12 @@ public class Server {
          * gets inputs and broadcasts them. */
         public void run() {
             try {
-                JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+
                 in = new BufferedReader(new InputStreamReader(
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
                 boolean newUserAdded;
+                JsonObjectBuilder jsonBuilder;
 
                 // Request a name from this client. Keep requesting until
                 // a name is submitted that is not already used. Note that
@@ -99,16 +104,17 @@ public class Server {
                 while (true) {
 
                     if (newUserAdded) {
-                        jsonBuilder.add(
-                                "users",
-                                Arrays.toString(
-                                        names.stream()
-                                                .map(u -> u.getUsername())
-                                                .toArray(String[]::new)));
 
-                        JsonObject json = jsonBuilder.build();
-                        out.println(json.toString());
-                        writers.add(out);
+                        StringBuilder strB = new StringBuilder();
+                        strB.append("USERS:");
+                        names.stream()
+                                .map(u -> u.getUsername())
+                                .forEach(name -> strB.append(name).append(","));
+
+                        for (PrintWriter writer : writers) {
+                            writer.println(strB.toString());
+                        }
+
                         newUserAdded = false;
                     }
 

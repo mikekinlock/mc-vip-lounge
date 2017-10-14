@@ -56,6 +56,7 @@ public class Server {
         private BufferedReader in;
         private PrintWriter out;
         private boolean closed;
+        private boolean newUserAdded;
 
         /** Constructs a handler thread, squirreling away the socket. All the interesting work is done in the run
          * method. */
@@ -72,8 +73,6 @@ public class Server {
                 in = new BufferedReader(new InputStreamReader(
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
-                boolean newUserAdded;
-                JsonObjectBuilder jsonBuilder;
 
                 // Request a name from this client. Keep requesting until
                 // a name is submitted that is not already used. Note that
@@ -104,18 +103,7 @@ public class Server {
                 while (true) {
 
                     if (newUserAdded) {
-
-                        StringBuilder strB = new StringBuilder();
-                        strB.append("USERS:");
-                        names.stream()
-                                .map(u -> u.getUsername())
-                                .forEach(name -> strB.append(name).append(","));
-
-                        for (PrintWriter writer : writers) {
-                            writer.println(strB.toString());
-                        }
-
-                        newUserAdded = false;
+                        updateUserList();
                     }
 
                     String input = in.readLine();
@@ -133,7 +121,7 @@ public class Server {
                 // writer from the sets, and close its socket.
                 if (name != null) {
                     names.remove(name);
-
+                    updateUserList();
                 }
                 if (out != null) {
                     writers.remove(out);
@@ -144,6 +132,20 @@ public class Server {
                 } catch (IOException e) {
                 }
             }
+        }
+
+        private void updateUserList(){
+            StringBuilder strB = new StringBuilder();
+            strB.append("USERS:");
+            names.stream()
+                    .map(u -> u.getUsername())
+                    .forEach(name -> strB.append(name).append(","));
+
+            for (PrintWriter writer : writers) {
+                writer.println(strB.toString());
+            }
+
+            newUserAdded = false;
         }
 
         public boolean isClosed() {

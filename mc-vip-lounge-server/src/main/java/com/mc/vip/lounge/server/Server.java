@@ -127,6 +127,7 @@ public class Server {
                 // writer from the sets, and close its socket.
                 if (name != null) {
                     names.remove(name);
+
                 }
                 if (out != null) {
                     writers.remove(out);

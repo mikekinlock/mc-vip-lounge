@@ -1,10 +1,8 @@
 package com.mc.vip.lounge.clientchat.gui;
 
-import com.mc.vip.lounge.clientchat.model.ChatUsers;
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 
 public class ClientGraficalInterface {
 
@@ -18,10 +16,12 @@ public class ClientGraficalInterface {
 
 
     private ClientGraficalInterface() {
+        list = new JList<>(OnlineUserListFactory.getInstance().getUserList());
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
+        frame.getContentPane().add(list,"East");
         frame.pack();
     }
 

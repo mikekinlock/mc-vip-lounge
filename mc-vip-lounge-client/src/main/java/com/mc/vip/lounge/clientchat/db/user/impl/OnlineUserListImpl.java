@@ -8,9 +8,7 @@ public class OnlineUserListImpl implements OnlineUserList{
 
     private static final DefaultListModel<String> onlineList = new DefaultListModel<>();
 
-    private OnlineUserListImpl(){
-
-    }
+    private OnlineUserListImpl(){ }
 
     public static OnlineUserList getUserListInstance(){
         return new OnlineUserListImpl();

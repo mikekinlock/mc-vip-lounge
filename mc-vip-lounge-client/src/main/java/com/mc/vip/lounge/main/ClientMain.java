@@ -1,7 +1,6 @@
 package com.mc.vip.lounge.main;
 
 import javax.swing.*;
-
 import com.mc.vip.lounge.clientchat.controller.ClientChatController;
 
 public class ClientMain {

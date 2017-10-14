@@ -1,20 +1,12 @@
 package com.mc.vip.lounge.clientchat.controller;
 
-import static javax.json.Json.createReader;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;

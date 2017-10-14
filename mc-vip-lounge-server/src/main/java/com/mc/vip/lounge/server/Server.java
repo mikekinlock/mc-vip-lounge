@@ -1,26 +1,17 @@
 package com.mc.vip.lounge.server;
 
-import com.mc.vip.lounge.model.ChatUsers;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonArrayBuilder;
+import com.mc.vip.lounge.model.ChatUsers;
 
 /** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the
  * text "SUBMITNAME", and keeps requesting a name until a unique one is received. After a client submits a unique name,

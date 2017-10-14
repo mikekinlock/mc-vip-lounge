@@ -1,5 +1,7 @@
 package com.mc.vip.lounge.server;
 
+import com.mc.vip.lounge.model.ChatUsers;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +36,7 @@ public class Server {
 
     /** The set of all names of clients in the chat room. Maintained so that we can check that new clients are not
      * registering name already in use. */
-    private static List<String> names = new CopyOnWriteArrayList<>();
+    private static List<ChatUsers> names = new CopyOnWriteArrayList<>();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
     private static HashSet<PrintWriter> writers = new HashSet<>();
@@ -80,7 +82,7 @@ public class Server {
                     }
 
                     if (!names.contains(name)) {
-                        names.add(name);
+                        names.add(new ChatUsers(name,true));
                         newUserAdded = true;
                         break;
                     }
@@ -101,14 +103,12 @@ public class Server {
                                 "users",
                                 Arrays.toString(
                                         names.stream()
+                                                .map(u -> u.getUsername())
                                                 .toArray(String[]::new)));
 
                         JsonObject json = jsonBuilder.build();
                         out.println(json.toString());
                         writers.add(out);
-                        for (PrintWriter writer : writers) {
-                            writer.println(json.toString());
-                        }
                         newUserAdded = false;
                     }
 

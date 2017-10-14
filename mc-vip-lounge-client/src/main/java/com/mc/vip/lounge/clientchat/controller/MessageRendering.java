@@ -53,18 +53,20 @@ public class MessageRendering {
             // Process all messages from server, according to the protocol.
             while (runClient) {
                 String line = in.readLine();
-                if (line.startsWith("SUBMITNAME")) {
+                boolean hasLine = line != null;
+                if (hasLine && line.startsWith("SUBMITNAME")) {
                     out.println(gui.getUserName());
-                } else if (line.startsWith("NAMEACCEPTED")) {
+                } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
-                } else if (line.startsWith("MESSAGE")) {
+                } else if (hasLine && line.startsWith("MESSAGE")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
-                } else if (line.startsWith("{\"users\":")){
+                } else if (hasLine && line.startsWith("{\"users\":")){
                     JsonReader jsonReader = createReader(new StringReader(line));
                     JsonObject jsonObject = jsonReader.readObject();
                     String [] users = jsonObject.getString("users").split(",");
+
                     jsonReader.close();
-                } else if (line.startsWith("CLOSE")) {
+                } else if (hasLine && line.startsWith("CLOSE")) {
                     runClient = false;
                 }
             }

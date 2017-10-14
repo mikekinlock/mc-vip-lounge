@@ -1,7 +1,9 @@
 package com.mc.vip.lounge.model;
 
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 public class ChatRoom {
 
@@ -10,10 +12,11 @@ public class ChatRoom {
     private List <String> chatRecord;
     private boolean isActiv;
 
-    public ChatRoom(final long id, @NotNull final ChatUsers ... users){
-        this.id = id;
-        if(users.length > 0){
-            
+    public ChatRoom(@NotNull final long id, @NotNull final ArrayList users){
+        if(users.size() > 0){
+            this.id = id;
+            this.users = users;
+            this.chatRecord = new ArrayList<>();
         }
     }
 

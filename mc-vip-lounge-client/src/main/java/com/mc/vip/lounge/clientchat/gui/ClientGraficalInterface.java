@@ -15,7 +15,6 @@ public class ClientGraficalInterface {
     private JTextArea messageArea = new JTextArea(8, 40);
     // List to show currently all users
     private static JList<String> list;
-    private static JButton button;
 
 
     private ClientGraficalInterface() {
@@ -23,8 +22,6 @@ public class ClientGraficalInterface {
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.getContentPane().add(list, "East");
-        frame.getContentPane().add(button,"West");
         frame.pack();
     }
 

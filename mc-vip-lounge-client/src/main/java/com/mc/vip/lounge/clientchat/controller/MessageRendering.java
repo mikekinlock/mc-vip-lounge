@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
+import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
 /** A simple Swing-based client for the chat server. Graphically it is a gui with a text field for entering messages
  * and a textarea to see the whole dialog.
@@ -37,10 +39,9 @@ public class MessageRendering {
     }
 
 
-
     public void listenGroupChat(){
-        try {
 
+        try {
             addGroupChatListener(out);
 
             boolean runClient = true;
@@ -48,19 +49,28 @@ public class MessageRendering {
             // Process all messages from server, according to the protocol.
             while (runClient) {
                 String line = in.readLine();
-                if (line.startsWith("SUBMITNAME")) {
-                    out.println(gui.getUserName());
-                } else if (line.startsWith("NAMEACCEPTED")) {
+                boolean hasLine = line != null;
+                if (hasLine && line.startsWith("SUBMITNAME")) {
+                    String name = gui.getUserName();
+                    CurrentClient.setName(name);
+                    out.println(name);
+                } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
-                } else if (line.startsWith("u")) {
+                } else if (hasLine && line.startsWith("MESSAGE")) {
                     gui.getMessageArea().append(line.substring(8) + "\n");
-                } else if (line.startsWith("CLOSE")) {
+                } else if (hasLine && line.startsWith("USERS:")){
+                    String usersString = line.substring(6);
+                    String[] userList = usersString.split(",");
+                    OnlineUserListFactory.getInstance().updateUserList(userList);
+
+                } else if (hasLine && line.startsWith("CLOSE")) {
                     runClient = false;
                 }
             }
         } catch (IOException e) {
             CLIENT_GROUP_LOG.log(Level.WARNING,"Not able to read from input: ",e);
         }
+
     }
 
 

@@ -1,10 +1,8 @@
 package com.mc.vip.lounge.clientchat.gui;
 
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+
+import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 
 public class ClientGraficalInterface {
 
@@ -13,14 +11,17 @@ public class ClientGraficalInterface {
     private JFrame frame = new JFrame("Chat");
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
-    private JTextArea test = new JTextArea(8, 40);
-    private JTextArea test1 = new JTextArea(8, 40);
+    // List to show currently all users
+    private static JList<String> list;
 
-    private ClientGraficalInterface(){
+
+    private ClientGraficalInterface() {
+        list = new JList<>(OnlineUserListFactory.getInstance().getUserList());
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
+        frame.getContentPane().add(list,"East");
         frame.pack();
     }
 
@@ -32,8 +33,8 @@ public class ClientGraficalInterface {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    public static ClientGraficalInterface getInstance(){
-        if (instance == null){
+    public static ClientGraficalInterface getInstance() {
+        if (instance == null) {
             instance = new ClientGraficalInterface();
         }
         return instance;

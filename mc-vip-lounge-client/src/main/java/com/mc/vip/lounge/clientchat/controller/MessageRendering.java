@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
 import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
 
 /** A simple Swing-based client for the chat server. Graphically it is a gui with a text field for entering messages

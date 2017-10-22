@@ -7,7 +7,7 @@ import com.mc.vip.lounge.server.Server;
 public class ServerMain {
 
     /**
-     * The appplication main method, which just listens on a port and
+     * The application main method, which just listens on a port and
      * spawns handler threads.
      */
     public static void main(String[] args) throws Exception {

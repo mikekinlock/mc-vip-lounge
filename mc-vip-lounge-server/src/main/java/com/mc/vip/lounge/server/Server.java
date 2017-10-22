@@ -102,7 +102,7 @@ public class Server {
                         return;
                     }
                     for (PrintWriter writer : writers) {
-                        writer.println("MESSAGE " + name + ": " + input);
+                            writer.println("MESSAGE " + name + ": " + input);
                     }
                 }
             } catch (IOException e) {

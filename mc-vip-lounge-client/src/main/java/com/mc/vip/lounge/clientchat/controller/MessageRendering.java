@@ -57,12 +57,12 @@ public class MessageRendering {
                 } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
                 } else if (hasLine && line.startsWith("MESSAGE")) {
+                    out.println();
                     gui.getMessageArea().append(line.substring(8) + "\n");
                 } else if (hasLine && line.startsWith("USERS:")){
                     String usersString = line.substring(6);
                     String[] userList = usersString.split(",");
                     OnlineUserListFactory.getInstance().updateUserList(userList);
-
                 } else if (hasLine && line.startsWith("CLOSE")) {
                     runClient = false;
                 }

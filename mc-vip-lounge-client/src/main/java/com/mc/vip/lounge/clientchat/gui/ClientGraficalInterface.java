@@ -1,8 +1,16 @@
 package com.mc.vip.lounge.clientchat.gui;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 
+import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
+import com.mc.vip.lounge.clientchat.db.user.factory.ClientChatRoomsListFactory;
 import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
+import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
+import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
 public class ClientGraficalInterface {
 
@@ -12,17 +20,17 @@ public class ClientGraficalInterface {
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
     // List to show currently all users
-    private static JList<String> list;
-
+    private static JList<String> list = new JList<>(OnlineUserListFactory.getInstance().getUserList());
 
     private ClientGraficalInterface() {
-        list = new JList<>(OnlineUserListFactory.getInstance().getUserList());
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.getContentPane().add(list,"East");
+        frame.getContentPane().add(list, "East");
         frame.pack();
+
+        addListListener();
     }
 
     public String getUserName() {
@@ -38,6 +46,38 @@ public class ClientGraficalInterface {
             instance = new ClientGraficalInterface();
         }
         return instance;
+    }
+
+    private void addListListener() {
+        list.addListSelectionListener(e -> {
+
+            List<String> selected = list.getSelectedValuesList();
+            selected.add(CurrentClient.getName());
+
+            ClientChatRoom chatRoom = null;
+
+            String createdId = selected.stream()
+                    .sorted()
+                    .collect(Collectors.joining());
+
+            ClientChatRoomsList chatRooms = ClientChatRoomsListFactory.getInstance();
+
+            Optional<ClientChatRoom> room = chatRooms.getAllClientChatRooms()
+                    .stream()
+                    .filter(r -> r.getId().equals(createdId))
+                    .findFirst();
+
+            if (!room.isPresent()) {
+                chatRooms.nonSelected();
+                chatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
+                chatRooms.getAllClientChatRooms()
+                         .add(chatRoom);
+            } else {
+                chatRoom = room.get();
+                chatRoom.setSelected(true);
+            }
+
+        });
     }
 
     public JFrame getFrame() {

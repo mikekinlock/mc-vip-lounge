@@ -7,10 +7,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mc.vip.lounge.db.connection.factory.UserConnectionFactory;
 import com.mc.vip.lounge.model.ChatUsers;
 
 /** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the
@@ -31,7 +31,7 @@ public class Server {
 
     /** The set of all names of clients in the chat room. Maintained so that we can check that new clients are not
      * registering name already in use. */
-    private static List<ChatUsers> names = new CopyOnWriteArrayList<>();
+    private static List<ChatUsers> names = UserConnectionFactory.getInstance().getAllUsers();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
     private static HashSet<PrintWriter> writers = new HashSet<>();
@@ -102,7 +102,8 @@ public class Server {
                         return;
                     }
                     for (PrintWriter writer : writers) {
-                            writer.println("MESSAGE " + name + ": " + input);
+
+                        writer.println("SENDERNAME" + name + ": " + input);
                     }
                 }
             } catch (IOException e) {

@@ -20,17 +20,21 @@ public class ClientGraficalInterface {
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
     // List to show currently all users
-    private static JList<String> list = new JList<>(OnlineUserListFactory.getInstance().getUserList());
+    private static DefaultListModel<String> chatNames = new DefaultListModel<>();
+    private static JList<String> onlineUsers = new JList<>(OnlineUserListFactory.getInstance().getUserList());
+    private static JList<String> chatRooms = new JList<>(chatNames);
 
     private ClientGraficalInterface() {
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
-        frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.getContentPane().add(list, "East");
+        frame.getContentPane().add(onlineUsers, "East");
+        setTextArea(messageArea);
+        frame.getContentPane().add(chatRooms, "West");
         frame.pack();
 
-        addListListener();
+        addUserListListener();
+        addChatListListener();
     }
 
     public String getUserName() {
@@ -48,13 +52,11 @@ public class ClientGraficalInterface {
         return instance;
     }
 
-    private void addListListener() {
-        list.addListSelectionListener(e -> {
+    private void addUserListListener() {
+        onlineUsers.addListSelectionListener(e -> {
 
-            List<String> selected = list.getSelectedValuesList();
+            List<String> selected = onlineUsers.getSelectedValuesList();
             selected.add(CurrentClient.getName());
-
-            ClientChatRoom chatRoom = null;
 
             String createdId = selected.stream()
                     .sorted()
@@ -64,19 +66,25 @@ public class ClientGraficalInterface {
 
             Optional<ClientChatRoom> room = chatRooms.getAllClientChatRooms()
                     .stream()
-                    .filter(r -> r.getId().equals(createdId))
+                    .filter(currentRoom -> currentRoom.getId().equals(createdId))
                     .findFirst();
 
             if (!room.isPresent()) {
-                chatRooms.nonSelected();
-                chatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
-                chatRooms.getAllClientChatRooms()
-                         .add(chatRoom);
-            } else {
-                chatRoom = room.get();
-                chatRoom.setSelected(true);
-            }
+                addChatRoom(chatRooms,selected,true);
 
+            } else {
+                room.get().setSelected(true);
+            }
+        });
+    }
+
+    private void addChatListListener() {
+        chatRooms.addListSelectionListener(e -> {
+            String roomId = chatRooms.getSelectedValue();
+            Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(roomId);
+            if(room.isPresent()){
+                setTextArea(room.get().getMessageArea());
+            }
         });
     }
 
@@ -90,6 +98,19 @@ public class ClientGraficalInterface {
 
     public JTextArea getMessageArea() {
         return messageArea;
+    }
+
+    public void addChatRoom(ClientChatRoomsList chatRooms, List<String> selected, boolean isSelected){
+        chatRooms.nonSelected();
+        ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
+        chatRooms.getAllClientChatRooms()
+                .add(newChatRoom);
+        newChatRoom.setSelected(isSelected);
+        chatNames.addElement(newChatRoom.getId());
+    }
+
+    public void setTextArea(JTextArea textArea){
+        frame.getContentPane().add(new JScrollPane(textArea), "Center");
     }
 
 }

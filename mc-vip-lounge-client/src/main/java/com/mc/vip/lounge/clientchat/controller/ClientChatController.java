@@ -18,7 +18,7 @@ public class ClientChatController {
     private PrintWriter out;
     private ClientGraficalInterface gui;
 
-    private Logger CLIENT_LOG = Logger.getLogger(ClientGraficalInterface.class.getName());
+    private Logger CLIENT_LOG = Logger.getLogger(ClientChatController.class.getName());
 
     public ClientChatController(){
         gui = ClientGraficalInterface.getInstance();

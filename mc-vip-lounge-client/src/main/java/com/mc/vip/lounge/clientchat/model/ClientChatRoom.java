@@ -12,14 +12,14 @@ public class ClientChatRoom {
     private boolean isSelected;
     private String id;
     private String name;
-    private JTextArea messageArea = new JTextArea(8, 40);
+    private String conversation;
 
     public ClientChatRoom(@NotNull final String... users) {
         if (users.length > 0) {
             this.isSelected = true;
             this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
-            messageArea.setEditable(false);
             this.name = NO_NAME;
+            this.conversation = "";
         }
     }
     public void setSelected(final boolean isSelected){
@@ -30,8 +30,11 @@ public class ClientChatRoom {
         this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
     }
 
-    public JTextArea getMessageArea() {
-        return this.messageArea;
+    public String getMessages() {
+        return this.conversation;
+    }
+    public void addMessage(final String currentMessage) {
+        this.conversation = this.conversation + currentMessage;
     }
 
     public String getId() {

@@ -29,7 +29,7 @@ public class ClientGraficalInterface {
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(onlineUsers, "East");
-        setTextArea(messageArea);
+        frame.getContentPane().add(new JScrollPane(messageArea), "Center");
         frame.getContentPane().add(chatRooms, "West");
         frame.pack();
 
@@ -83,7 +83,7 @@ public class ClientGraficalInterface {
             String roomId = chatRooms.getSelectedValue();
             Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(roomId);
             if(room.isPresent()){
-                setTextArea(room.get().getMessageArea());
+                setTextAreaText(room.get().getMessages());
             }
         });
     }
@@ -96,10 +96,6 @@ public class ClientGraficalInterface {
         return textField;
     }
 
-    public JTextArea getMessageArea() {
-        return messageArea;
-    }
-
     public void addChatRoom(ClientChatRoomsList chatRooms, List<String> selected, boolean isSelected){
         chatRooms.nonSelected();
         ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
@@ -109,8 +105,8 @@ public class ClientGraficalInterface {
         chatNames.addElement(newChatRoom.getId());
     }
 
-    public void setTextArea(JTextArea textArea){
-        frame.getContentPane().add(new JScrollPane(textArea), "Center");
+    public void setTextAreaText(String textArea){
+        messageArea.setText(textArea);
     }
 
 }

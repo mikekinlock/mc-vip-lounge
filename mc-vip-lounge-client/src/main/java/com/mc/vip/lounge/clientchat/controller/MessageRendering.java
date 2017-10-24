@@ -85,11 +85,13 @@ public class MessageRendering {
 
                         Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(chatId);
                         if (room.isPresent()) {
-                            room.get().getMessageArea().append(senderName + ": " + message + "\n");
+                            room.get().addMessage(senderName + ": " + message + "\n");
+                            gui.setTextAreaText(room.get().getMessages());
                         } else {
                             room = Optional.of(new ClientChatRoom(chatId.split(",")));
-                            room.get().getMessageArea().append(senderName + ": " + message + "\n");
+                            room.get().addMessage(senderName + ": " + message + "\n");
                             ClientChatRoomsListFactory.getInstance().getAllClientChatRooms().add(room.get());
+                            gui.setTextAreaText(room.get().getMessages());
                         }
                     }
                 } else if (hasLine && line.startsWith("USERS:")) {

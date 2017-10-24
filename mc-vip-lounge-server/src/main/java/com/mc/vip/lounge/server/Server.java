@@ -8,10 +8,15 @@ import java.io.StringReader;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mc.vip.lounge.db.connection.ChatRoomsConnection;
+import com.mc.vip.lounge.db.connection.UsersConnection;
+import com.mc.vip.lounge.db.connection.factory.ChatRoomConnectionFactory;
 import com.mc.vip.lounge.db.connection.factory.UserConnectionFactory;
+import com.mc.vip.lounge.model.ChatRoom;
 import com.mc.vip.lounge.model.ChatUsers;
 
 import javax.json.Json;
@@ -50,6 +55,9 @@ public class Server {
 
         private static final String SERVER_MESSAGE_IDENTIFICATION = "server_message_json";
         private static final String SENDER_IDENTIFICATION = "sender_name";
+        private static final String CLIENT_MESSAGE_IDENTIFICATION = "client_message";
+        private static final String CHAT_IDENTIFICATION = "chat_id";
+        private static final String ALL_USER_ID = "all_users";
 
         private String name;
         private Socket socket;
@@ -111,15 +119,41 @@ public class Server {
                     for (PrintWriter writer : writers) {
                         JsonObject json;
                         JsonObjectBuilder builder;
-
                         try (JsonReader reader = Json.createReader(new StringReader(input))) {
                             json = reader.readObject();
+                        }
+
+                        String chatId = json.containsKey(CHAT_IDENTIFICATION)
+                                ? json.getString(CHAT_IDENTIFICATION)
+                                : ALL_USER_ID;
+
+                        ChatRoomsConnection chatRoomsConnection = ChatRoomConnectionFactory.getInstance();
+                        Optional<ChatRoom> room = chatRoomsConnection.getChatRoomById(chatId);
+
+                        if (!room.isPresent() && chatId.equals(ALL_USER_ID)){
+                            String[] users = UserConnectionFactory.getInstance().getAllUsers().stream().toArray(String[] :: new);
+                            room = Optional.of(new ChatRoom(users));
+                        }
+                        else if(room.isPresent()&& chatId.equals(ALL_USER_ID)){
+                            String[] users = UserConnectionFactory.getInstance().getAllUsers().stream().toArray(String[] :: new);
+                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
+                            room.get().updateUser(users);
+                        }else if(room.isPresent()) {
+                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
+                        }
+                        else {
+                            room = Optional.of(new ChatRoom(chatId.split(",")));
+                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
                         }
 
                         builder = Json.createObjectBuilder();
                         builder.add(SENDER_IDENTIFICATION, name);
                         builder.add(SERVER_MESSAGE_IDENTIFICATION , json);
-                        writer.println(builder.build().toString());
+
+                        if(room.get().containsUser(name)){
+                            writer.println(builder.build().toString());
+                        }
+
                     }
                 }
             } catch (IOException e) {

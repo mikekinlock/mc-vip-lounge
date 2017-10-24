@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
@@ -13,13 +14,18 @@ import java.util.logging.Logger;
 import com.mc.vip.lounge.db.connection.factory.UserConnectionFactory;
 import com.mc.vip.lounge.model.ChatUsers;
 
-/** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the
- * text "SUBMITNAME", and keeps requesting a name until a unique one is received. After a client submits a unique name,
- * the server acknowledges with "NAMEACCEPTED". Then all messages from that client will be broadcast to all other
- * clients that have submitted a unique screen name. The broadcast messages are prefixed with "MESSAGE ".
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+
+/** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the text "SUBMITNAME",
+ * and keeps requesting a name until a unique one is received. After a client submits a unique name, the server acknowledges with
+ * "NAMEACCEPTED". Then all messages from that client will be broadcast to all other clients that have submitted a unique screen name. The
+ * broadcast messages are prefixed with "MESSAGE ".
  *
- * Because this is just a teaching example to illustrate a simple chat server, there are a few features that have been
- * left out. Two are very useful and belong in production code:
+ * Because this is just a teaching example to illustrate a simple chat server, there are a few features that have been left out. Two are
+ * very useful and belong in production code:
  *
  * 1. The protocol should be enhanced so that the client can send clean disconnect messages to the server.
  *
@@ -29,18 +35,21 @@ public class Server {
     /** The port that the server listens on. */
     public static final int PORT = 9001;
 
-    /** The set of all names of clients in the chat room. Maintained so that we can check that new clients are not
-     * registering name already in use. */
+    /** The set of all names of clients in the chat room. Maintained so that we can check that new clients are not registering name already
+     * in use. */
     private static List<ChatUsers> names = UserConnectionFactory.getInstance().getAllUsers();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
     private static HashSet<PrintWriter> writers = new HashSet<>();
 
-    /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a
-     * single client and broadcasting its messages. */
+    /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a single client and
+     * broadcasting its messages. */
     public static class Handler extends Thread {
 
         private Logger SERVER_LOG = Logger.getLogger(Server.Handler.class.getName());
+
+        private static final String SERVER_MESSAGE_IDENTIFICATION = "server_message_json";
+        private static final String SENDER_IDENTIFICATION = "sender_name";
 
         private String name;
         private Socket socket;
@@ -49,15 +58,13 @@ public class Server {
         private boolean closed;
         private boolean newUserAdded;
 
-        /** Constructs a handler thread, squirreling away the socket. All the interesting work is done in the run
-         * method. */
+        /** Constructs a handler thread, squirreling away the socket. All the interesting work is done in the run method. */
         public Handler(Socket socket) {
             this.socket = socket;
         }
 
-        /** Services this thread's client by repeatedly requesting a screen name until a unique one has been submitted,
-         * then acknowledges the name and registers the output stream for the client in a global set, then repeatedly
-         * gets inputs and broadcasts them. */
+        /** Services this thread's client by repeatedly requesting a screen name until a unique one has been submitted, then acknowledges
+         * the name and registers the output stream for the client in a global set, then repeatedly gets inputs and broadcasts them. */
         public void run() {
             try {
 
@@ -77,7 +84,7 @@ public class Server {
                     }
 
                     if (!names.contains(name)) {
-                        names.add(new ChatUsers(name,true));
+                        names.add(new ChatUsers(name, true));
                         newUserAdded = true;
                         break;
                     }
@@ -102,8 +109,17 @@ public class Server {
                         return;
                     }
                     for (PrintWriter writer : writers) {
+                        JsonObject json;
+                        JsonObjectBuilder builder;
 
-                        writer.println("SENDERNAME" + name + ": " + input);
+                        try (JsonReader reader = Json.createReader(new StringReader(input))) {
+                            json = reader.readObject();
+                        }
+
+                        builder = Json.createObjectBuilder();
+                        builder.add(SENDER_IDENTIFICATION, name);
+                        builder.add(SERVER_MESSAGE_IDENTIFICATION , json);
+                        writer.println(builder.build().toString());
                     }
                 }
             } catch (IOException e) {
@@ -126,7 +142,7 @@ public class Server {
             }
         }
 
-        private void updateUserList(){
+        private void updateUserList() {
             StringBuilder strB = new StringBuilder();
             strB.append("USERS:");
             names.stream()

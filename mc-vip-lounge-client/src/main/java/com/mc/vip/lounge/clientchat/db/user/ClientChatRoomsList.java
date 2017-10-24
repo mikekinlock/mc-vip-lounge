@@ -11,5 +11,6 @@ public interface ClientChatRoomsList {
     List<ClientChatRoom> getAllClientChatRooms();
     Optional<ClientChatRoom> getSelectedChatRoom();
     Optional<ClientChatRoom> getRoomById(String id);
+    Optional<ClientChatRoom> getRoomByName(String name);
     void nonSelected();
 }

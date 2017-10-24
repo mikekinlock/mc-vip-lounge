@@ -1,13 +1,17 @@
 package com.mc.vip.lounge.clientchat.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 
 import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
 import com.mc.vip.lounge.clientchat.db.user.factory.ClientChatRoomsListFactory;
@@ -28,9 +32,12 @@ public class MessageRendering {
 
     private Logger CLIENT_GROUP_LOG = Logger.getLogger(MessageRendering.class.getName());
 
-    private static final String CHAT_IDENTIFICATION = "CHATID";
-    private static final String MESSAGE_IDENTIFICATION = "MESSAGE";
-    private static final String SENDER_IDENTIFICATION = "SENDERNAME";
+    private static final String ALL_USERS_CHAT = "all_users";
+    private static final String CHAT_IDENTIFICATION = "chat_id";
+    private static final String CLIENT_MESSAGE_IDENTIFICATION = "client_message";
+    private static final String SERVER_MESSAGE_IDENTIFICATION = "server_message_json";
+    private static final String SENDER_IDENTIFICATION = "sender_name";
+    private static final String JSON_BEGIN_IDENTIFICATION = "{\"";
 
     private BufferedReader in;
     private PrintWriter out;
@@ -62,30 +69,47 @@ public class MessageRendering {
                     out.println(name);
                 } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
                     gui.getTextField().setEditable(true);
-                } else if (hasLine && line.startsWith(SENDER_IDENTIFICATION)) {
+                } else if (hasLine && line.startsWith(JSON_BEGIN_IDENTIFICATION + SENDER_IDENTIFICATION)) {
                     // Create logic to check if room already exist or if room has to be created and add message to textarea
-                    int messageIndex = line.indexOf(MESSAGE_IDENTIFICATION)+7;
-                    if (line.contains(CHAT_IDENTIFICATION)) {
-                        int chatIndex = line.indexOf(CHAT_IDENTIFICATION);
-                        String senderName = line.substring(SENDER_IDENTIFICATION.length(),chatIndex);
-                        String chatId = line.substring(chatIndex+6, messageIndex-7) + "\n";
-                        Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(chatId);
-                        if (room.isPresent()) {
-                            room.get().getMessageArea().append(senderName+line.substring(messageIndex) + "\n");
-                        } else {
-                            room = Optional.of(new ClientChatRoom(chatId.split(",")));
-                            ClientChatRoomsListFactory.getInstance().getAllClientChatRooms().add(room.get());
-                            room.get().getMessageArea().append(senderName+line.substring(messageIndex) + "\n");
+                    try (JsonReader serverJsonReader = Json.createReader(new StringReader(line))) {
+                        JsonObject serverJson = serverJsonReader.readObject();
+
+                        String senderName = serverJson.getString(SENDER_IDENTIFICATION);
+                        JsonObject jsonObject = (JsonObject) serverJson.get(SERVER_MESSAGE_IDENTIFICATION);
+                        String message = jsonObject.getString(CLIENT_MESSAGE_IDENTIFICATION);
+                        String chatId = "";
+
+                        if (jsonObject.containsKey(CHAT_IDENTIFICATION)) {
+                            chatId = jsonObject.getString(CHAT_IDENTIFICATION);
                         }
 
-                    } else {
-                        String senderName = line.substring(SENDER_IDENTIFICATION.length(),messageIndex-7);
-                        gui.getMessageArea().append(senderName+line.substring(messageIndex) + "\n");
+                        Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(chatId);
+                        if (room.isPresent()) {
+                            room.get().getMessageArea().append(senderName + ": " + message + "\n");
+                        } else {
+                            room = Optional.of(new ClientChatRoom(chatId.split(",")));
+                            room.get().getMessageArea().append(senderName + ": " + message + "\n");
+                            ClientChatRoomsListFactory.getInstance().getAllClientChatRooms().add(room.get());
+                        }
                     }
                 } else if (hasLine && line.startsWith("USERS:")) {
                     String usersString = line.substring(6);
                     String[] userList = usersString.split(",");
                     OnlineUserListFactory.getInstance().updateUserList(userList);
+
+                    ClientChatRoomsList chatRoomsList = ClientChatRoomsListFactory.getInstance();
+
+                    if (chatRoomsList.getAllClientChatRooms().size() == 0) {
+                        ClientChatRoom room = new ClientChatRoom(CurrentClient.getName(), usersString);
+                        room.setName(ALL_USERS_CHAT);
+                        chatRoomsList.getAllClientChatRooms().add(room);
+                    } else {
+                        Optional<ClientChatRoom> room = chatRoomsList.getRoomByName(ALL_USERS_CHAT);
+                        if (room.isPresent()) {
+                            room.get().addUsers(CurrentClient.getName(), usersString);
+                        }
+                    }
+
                 } else if (hasLine && line.startsWith("CLOSE")) {
                     runClient = false;
                 }
@@ -98,26 +122,19 @@ public class MessageRendering {
 
     private void addGroupChatListener(final PrintWriter out) {
         // Add Listeners
-        gui.getTextField().addActionListener(new ActionListener() {
-            /** Responds to pressing the enter key in the textfield by sending the contents of the text field to the server. Then clear the
-             * text area in preparation for the next message. */
-            public void actionPerformed(ActionEvent e) {
-                StringBuilder stringBuilder = new StringBuilder();
-                ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();
-                Optional<ClientChatRoom> optionalChatRoom = roomsList.getSelectedChatRoom();
+        gui.getTextField().addActionListener(e -> {
+            ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();
+            Optional<ClientChatRoom> optionalChatRoom = roomsList.getSelectedChatRoom();
+            JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 
-                if (optionalChatRoom.isPresent()) {
-                    ClientChatRoom chatRoom = optionalChatRoom.get();
-                    stringBuilder.append(CHAT_IDENTIFICATION);
-                    stringBuilder.append(chatRoom.getId());
-                }
-
-                stringBuilder.append(MESSAGE_IDENTIFICATION);
-                stringBuilder.append(gui.getTextField().getText());
-
-                out.println(stringBuilder.toString());
-                gui.getTextField().setText("");
+            jsonBuilder.add(CLIENT_MESSAGE_IDENTIFICATION, gui.getTextField().getText());
+            if (optionalChatRoom.isPresent()) {
+                ClientChatRoom chatRoom = optionalChatRoom.get();
+                jsonBuilder.add(CHAT_IDENTIFICATION, chatRoom.getId());
             }
+
+            out.println(jsonBuilder.build().toString());
+            gui.getTextField().setText("");
         });
     }
 

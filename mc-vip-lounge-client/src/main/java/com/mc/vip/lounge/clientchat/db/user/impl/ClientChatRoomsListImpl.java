@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+//Todo: Verify that chat room name is unique
+
 public class ClientChatRoomsListImpl implements ClientChatRoomsList{
 
     private static List<ClientChatRoom> chatRooms;
@@ -43,6 +45,13 @@ public class ClientChatRoomsListImpl implements ClientChatRoomsList{
     public Optional<ClientChatRoom> getRoomById(String id) {
         return chatRooms.stream()
                 .filter(room -> room.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<ClientChatRoom> getRoomByName(String name) {
+        return chatRooms.stream()
+                .filter(room -> room.getName().equals(name))
                 .findFirst();
     }
 

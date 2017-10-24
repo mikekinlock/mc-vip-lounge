@@ -7,26 +7,27 @@ import java.util.stream.Collectors;
 
 public class ClientChatRoom {
 
-    private String[] users;
+    private static final String NO_NAME = "not_available";
+
     private boolean isSelected;
     private String id;
+    private String name;
     private JTextArea messageArea = new JTextArea(8, 40);
 
     public ClientChatRoom(@NotNull final String... users) {
         if (users.length > 0) {
-            this.users = users;
             this.isSelected = true;
-            this.id = Arrays.stream(this.users).sorted().collect(Collectors.joining(","));
+            this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
             messageArea.setEditable(false);
-
+            this.name = NO_NAME;
         }
     }
     public void setSelected(final boolean isSelected){
         this.isSelected = isSelected;
     }
 
-    public String[] getUsersAsArray() {
-        return this.users;
+    public void addUsers(String ... users){
+        this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
     }
 
     public JTextArea getMessageArea() {
@@ -39,5 +40,12 @@ public class ClientChatRoom {
 
     public boolean isSelected(){
         return this.isSelected;
+    }
+
+    public void setName (final String name){
+        this.name = name;
+    }
+    public String getName (){
+        return this.name;
     }
 }

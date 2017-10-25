@@ -71,7 +71,7 @@ public class ClientGraficalInterface {
                         .findFirst();
 
                 if (!room.isPresent()) {
-                    addChatRoom(chatRooms, selected, true);
+                    addChatRoom(selected, true);
 
                 } else {
                     room.get().setSelected(true);
@@ -100,14 +100,18 @@ public class ClientGraficalInterface {
         return textField;
     }
 
-    public void addChatRoom(ClientChatRoomsList chatRooms, List<String> selected, boolean isSelected) {
-        chatRooms.nonSelected();
+    private void addChatRoom(List<String> selected, boolean isSelected) {
+        ClientChatRoomsListFactory.getInstance().nonSelected();
         ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
-        if (!chatRoomNames.contains(newChatRoom.getId())) {
-            chatRooms.getAllClientChatRooms()
+        addChatRoomToChatList(newChatRoom.getId(),newChatRoom, isSelected);
+    }
+
+    public void addChatRoomToChatList(String identifier,ClientChatRoom newChatRoom, boolean isSelected) {
+        if (!chatRoomNames.contains(identifier)) {
+            ClientChatRoomsListFactory.getInstance().getAllClientChatRooms()
                     .add(newChatRoom);
             newChatRoom.setSelected(isSelected);
-            chatRoomNames.addElement(newChatRoom.getId());
+            chatRoomNames.addElement(identifier);
         }
     }
 

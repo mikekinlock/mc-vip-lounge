@@ -128,26 +128,17 @@ public class Server {
 
                         String chatId = json.containsKey(CHAT_IDENTIFICATION)
                                 ? json.getString(CHAT_IDENTIFICATION)
-                                : ALL_USER_ID;
+                                : "";
 
                         ChatRoomsConnection chatRoomsConnection = ChatRoomConnectionFactory.getInstance();
                         Optional<ChatRoom> room = chatRoomsConnection.getChatRoomById(chatId);
 
-                        if (!room.isPresent() && chatId.equals(ALL_USER_ID)){
-                            String[] users = UserConnectionFactory.getInstance().getAllUsers().stream().toArray(String[] :: new);
-                            room = Optional.of(new ChatRoom(users));
-                        }
-                        else if(room.isPresent()&& chatId.equals(ALL_USER_ID)){
-                            String[] users = UserConnectionFactory.getInstance().getAllUsers().stream().toArray(String[] :: new);
-                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
-                            room.get().updateUser(users);
-                        }else if(room.isPresent()) {
-                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
-                        }
-                        else {
+
+                        if(!room.isPresent()) {
                             room = Optional.of(new ChatRoom(chatId.split(",")));
-                            room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
                         }
+
+                        room.get().addMessage(json.getString(CLIENT_MESSAGE_IDENTIFICATION));
 
                         builder = Json.createObjectBuilder();
                         builder.add(SENDER_IDENTIFICATION, name);

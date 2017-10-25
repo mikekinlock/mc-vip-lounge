@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +47,7 @@ public class Server {
     private static List<ChatUsers> names = UserConnectionFactory.getInstance().getAllUsers();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
-    private static HashSet<PrintWriter> writers = new HashSet<>();
+    private static Map<String,PrintWriter> writers = new HashMap<>();
 
     /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a single client and
      * broadcasting its messages. */
@@ -102,7 +104,7 @@ public class Server {
                 // socket's print writer to the set of all writers so
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
-                writers.add(out);
+                writers.put(name,out);
 
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
@@ -116,7 +118,8 @@ public class Server {
                     if (input == null) {
                         return;
                     }
-                    for (PrintWriter writer : writers) {
+                    for (Map.Entry<String,PrintWriter> writerEntry : writers.entrySet()) {
+
                         JsonObject json;
                         JsonObjectBuilder builder;
                         try (JsonReader reader = Json.createReader(new StringReader(input))) {
@@ -150,8 +153,8 @@ public class Server {
                         builder.add(SENDER_IDENTIFICATION, name);
                         builder.add(SERVER_MESSAGE_IDENTIFICATION , json);
 
-                        if(room.get().containsUser(name)){
-                            writer.println(builder.build().toString());
+                        if(room.get().containsUser(writerEntry.getKey())){
+                            writerEntry.getValue().println(builder.build().toString());
                         }
 
                     }
@@ -183,8 +186,8 @@ public class Server {
                     .map(u -> u.getUsername())
                     .forEach(name -> strB.append(name).append(","));
 
-            for (PrintWriter writer : writers) {
-                writer.println(strB.toString());
+            for (Map.Entry<String,PrintWriter> writerEntry : writers.entrySet()) {
+                writerEntry.getValue().println(strB.toString());
             }
 
             newUserAdded = false;

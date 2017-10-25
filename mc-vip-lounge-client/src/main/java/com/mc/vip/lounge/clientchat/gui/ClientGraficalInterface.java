@@ -20,9 +20,9 @@ public class ClientGraficalInterface {
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
     // List to show currently all users
-    private static DefaultListModel<String> chatNames = new DefaultListModel<>();
+    private static DefaultListModel<String> chatRoomNames = new DefaultListModel<>();
     private static JList<String> onlineUsers = new JList<>(OnlineUserListFactory.getInstance().getUserList());
-    private static JList<String> chatRooms = new JList<>(chatNames);
+    private static JList<String> guiChatRooms = new JList<>(chatRoomNames);
 
     private ClientGraficalInterface() {
         textField.setEditable(false);
@@ -30,7 +30,7 @@ public class ClientGraficalInterface {
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(onlineUsers, "East");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.getContentPane().add(chatRooms, "West");
+        frame.getContentPane().add(guiChatRooms, "West");
         frame.pack();
 
         addUserListListener();
@@ -56,33 +56,37 @@ public class ClientGraficalInterface {
         onlineUsers.addListSelectionListener(e -> {
 
             List<String> selected = onlineUsers.getSelectedValuesList();
-            selected.add(CurrentClient.getName());
+            if (selected.size() > 0) {
+                selected.add(CurrentClient.getName());
 
-            String createdId = selected.stream()
-                    .sorted()
-                    .collect(Collectors.joining());
+                String createdId = selected.stream()
+                        .sorted()
+                        .collect(Collectors.joining());
 
-            ClientChatRoomsList chatRooms = ClientChatRoomsListFactory.getInstance();
+                ClientChatRoomsList chatRooms = ClientChatRoomsListFactory.getInstance();
 
-            Optional<ClientChatRoom> room = chatRooms.getAllClientChatRooms()
-                    .stream()
-                    .filter(currentRoom -> currentRoom.getId().equals(createdId))
-                    .findFirst();
+                Optional<ClientChatRoom> room = chatRooms.getAllClientChatRooms()
+                        .stream()
+                        .filter(currentRoom -> currentRoom.getId().equals(createdId))
+                        .findFirst();
 
-            if (!room.isPresent()) {
-                addChatRoom(chatRooms,selected,true);
+                if (!room.isPresent()) {
+                    addChatRoom(chatRooms, selected, true);
 
-            } else {
-                room.get().setSelected(true);
+                } else {
+                    room.get().setSelected(true);
+                }
             }
         });
     }
 
     private void addChatListListener() {
-        chatRooms.addListSelectionListener(e -> {
-            String roomId = chatRooms.getSelectedValue();
+        guiChatRooms.addListSelectionListener(e -> {
+            String roomId = guiChatRooms.getSelectedValue();
             Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(roomId);
-            if(room.isPresent()){
+            if (room.isPresent()) {
+                ClientChatRoomsListFactory.getInstance().nonSelected();
+                room.get().setSelected(true);
                 setTextAreaText(room.get().getMessages());
             }
         });
@@ -96,16 +100,18 @@ public class ClientGraficalInterface {
         return textField;
     }
 
-    public void addChatRoom(ClientChatRoomsList chatRooms, List<String> selected, boolean isSelected){
+    public void addChatRoom(ClientChatRoomsList chatRooms, List<String> selected, boolean isSelected) {
         chatRooms.nonSelected();
         ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
-        chatRooms.getAllClientChatRooms()
-                .add(newChatRoom);
-        newChatRoom.setSelected(isSelected);
-        chatNames.addElement(newChatRoom.getId());
+        if (!chatRoomNames.contains(newChatRoom.getId())) {
+            chatRooms.getAllClientChatRooms()
+                    .add(newChatRoom);
+            newChatRoom.setSelected(isSelected);
+            chatRoomNames.addElement(newChatRoom.getId());
+        }
     }
 
-    public void setTextAreaText(String textArea){
+    public void setTextAreaText(String textArea) {
         messageArea.setText(textArea);
     }
 

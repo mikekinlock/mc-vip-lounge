@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +45,7 @@ public class Server {
     private static List<ChatUsers> names = UserConnectionFactory.getInstance().getAllUsers();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
-    private static Map<String, PrintWriter> writers = new HashMap<>();
+    private static Map<String, PrintWriter> writers = new ConcurrentHashMap<>();
 
     /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a single client and
      * broadcasting its messages. */

@@ -8,7 +8,10 @@ import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
 public interface ClientChatRoomsList {
 
     List<ClientChatRoom> getAllClientChatRooms();
+
     Optional<ClientChatRoom> getSelectedChatRoom();
+
     Optional<ClientChatRoom> getRoomById(String id);
+
     void nonSelected();
 }

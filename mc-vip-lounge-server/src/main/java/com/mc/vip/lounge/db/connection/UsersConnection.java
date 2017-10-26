@@ -1,8 +1,8 @@
 package com.mc.vip.lounge.db.connection;
 
-import com.mc.vip.lounge.model.ChatUsers;
-
 import java.util.List;
+
+import com.mc.vip.lounge.model.ChatUsers;
 
 public interface UsersConnection {
     List<ChatUsers> getAllUsers();

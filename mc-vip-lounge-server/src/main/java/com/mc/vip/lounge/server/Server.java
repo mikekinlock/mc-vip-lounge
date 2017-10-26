@@ -45,7 +45,7 @@ public class Server {
     private static List<ChatUsers> names = UserConnectionFactory.getInstance().getAllUsers();
 
     /** The set of all the print writers for all the clients. This set is kept so we can easily broadcast messages. */
-    private static Map<String,PrintWriter> writers = new HashMap<>();
+    private static Map<String, PrintWriter> writers = new HashMap<>();
 
     /** A handler thread class. Handlers are spawned from the listening loop and are responsible for a dealing with a single client and
      * broadcasting its messages. */
@@ -102,7 +102,7 @@ public class Server {
                 // After a user has been successful created and added we'll add
                 // a write to each user.
                 out.println(CLIENT_ACCEPTED_INFO);
-                writers.put(name,out);
+                writers.put(name, out);
 
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
@@ -116,7 +116,7 @@ public class Server {
                     if (input == null) {
                         return;
                     }
-                    for (Map.Entry<String,PrintWriter> writerEntry : writers.entrySet()) {
+                    for (Map.Entry<String, PrintWriter> writerEntry : writers.entrySet()) {
 
                         JsonObject json;
                         JsonObjectBuilder builder;
@@ -131,8 +131,7 @@ public class Server {
                         ChatRoomsConnection chatRoomsConnection = ChatRoomConnectionFactory.getInstance();
                         Optional<ChatRoom> room = chatRoomsConnection.getChatRoomById(chatId);
 
-
-                        if(!room.isPresent()) {
+                        if (!room.isPresent()) {
                             room = Optional.of(new ChatRoom(chatId.split(",")));
                         }
 
@@ -140,9 +139,9 @@ public class Server {
 
                         builder = Json.createObjectBuilder();
                         builder.add(SENDER_IDENTIFICATION, name);
-                        builder.add(SERVER_MESSAGE_IDENTIFICATION , json);
+                        builder.add(SERVER_MESSAGE_IDENTIFICATION, json);
 
-                        if(room.get().containsUser(writerEntry.getKey())){
+                        if (room.get().containsUser(writerEntry.getKey())) {
                             writerEntry.getValue().println(builder.build().toString());
                         }
 
@@ -168,7 +167,7 @@ public class Server {
             }
         }
 
-        //Todo: Change user list creation to JSON
+        // Todo: Change user list creation to JSON
         private void updateUserList() {
             StringBuilder strB = new StringBuilder();
             strB.append("USERS:");
@@ -176,7 +175,7 @@ public class Server {
                     .map(u -> u.getUsername())
                     .forEach(name -> strB.append(name).append(","));
 
-            for (Map.Entry<String,PrintWriter> writerEntry : writers.entrySet()) {
+            for (Map.Entry<String, PrintWriter> writerEntry : writers.entrySet()) {
                 writerEntry.getValue().println(strB.toString());
             }
 

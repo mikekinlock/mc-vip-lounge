@@ -5,9 +5,10 @@ import com.mc.vip.lounge.clientchat.db.user.impl.ClientChatRoomsListImpl;
 
 public class ClientChatRoomsListFactory {
 
-    private ClientChatRoomsListFactory(){};
+    private ClientChatRoomsListFactory() {
+    }
 
-    public static ClientChatRoomsList getInstance(){
+    public static ClientChatRoomsList getInstance() {
         return ClientChatRoomsListImpl.getInstance();
     }
 

@@ -6,16 +6,16 @@ public class ChatUsers {
     private boolean isOnline;
     private long id;
 
-    public ChatUsers(final String username, final boolean isOnline){
+    public ChatUsers(final String username, final boolean isOnline) {
         this.username = username;
         this.isOnline = isOnline;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
-    public int compareTo(final ChatUsers compare){
+    public int compareTo(final ChatUsers compare) {
         String firstUser = this.username;
 
         Comparable usersCompare = (Comparable<ChatUsers>) o -> {

@@ -21,7 +21,7 @@ public class ClientChatController {
 
     private Logger CLIENT_LOG = Logger.getLogger(ClientChatController.class.getName());
 
-    public ClientChatController(){
+    public ClientChatController() {
         gui = ClientGUIFactory.getInstance();
     }
 
@@ -36,7 +36,7 @@ public class ClientChatController {
                     socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            MessageRendering messageRendering = new MessageRendering(in,out,gui);
+            MessageRendering messageRendering = new MessageRendering(in, out, gui);
             messageRendering.listenGroupChat();
 
         } catch (Exception e) {
@@ -49,7 +49,6 @@ public class ClientChatController {
     public JFrame getFrame() {
         return gui.getFrame();
     }
-
 
     /** Prompt for and return the address of the server. */
     private String getServerAddress() {

@@ -34,12 +34,12 @@ public class ChatRoom {
         this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
     }
 
-    public boolean containsUser(String name){
-       return this.users.stream()
+    public boolean containsUser(String name) {
+        return this.users.stream()
                 .anyMatch(user -> user.getUsername().equals(name));
     }
 
-    public void updateUser(String ... users){
+    public void updateUser(String... users) {
         createUsersAndID(users);
     }
 

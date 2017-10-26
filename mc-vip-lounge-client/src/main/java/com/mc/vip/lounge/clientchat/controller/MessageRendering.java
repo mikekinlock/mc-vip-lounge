@@ -87,13 +87,15 @@ public class MessageRendering {
                             gui.setTextAreaText(room.get().getMessages());
                         }
                     }
-                } else if (hasLine && line.startsWith("USERS:")) {
+                }
+                // Todo: change this into a JSON to avoid string parsing
+                else if (hasLine && line.startsWith("USERS:")) {
                     String usersString = line.substring(6);
                     String[] userList = usersString.split(",");
                     OnlineUserListFactory.getInstance().updateUserList(userList);
 
                 } else if (hasLine && line.startsWith("CLOSE")) {
-                    CLIENT_GROUP_LOG.log(Level.WARNING,"Server is not available anymore");
+                    CLIENT_GROUP_LOG.log(Level.WARNING, "Server is not available anymore");
                     runClient = false;
                 }
             }

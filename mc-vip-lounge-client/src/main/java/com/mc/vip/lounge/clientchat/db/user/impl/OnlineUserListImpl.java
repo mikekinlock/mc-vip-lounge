@@ -5,13 +5,14 @@ import javax.swing.*;
 import com.mc.vip.lounge.clientchat.db.user.OnlineUserList;
 import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
-public class OnlineUserListImpl implements OnlineUserList{
+public class OnlineUserListImpl implements OnlineUserList {
 
     private static final DefaultListModel<String> onlineList = new DefaultListModel<>();
 
-    private OnlineUserListImpl(){ }
+    private OnlineUserListImpl() {
+    }
 
-    public static OnlineUserList getUserListInstance(){
+    public static OnlineUserList getUserListInstance() {
         return new OnlineUserListImpl();
     }
 
@@ -19,9 +20,9 @@ public class OnlineUserListImpl implements OnlineUserList{
     public void updateUserList(String[] users) {
         onlineList.removeAllElements();
         int index = 0;
-        for(String user : users){
-            if (!user.equals(CurrentClient.getName())){
-                onlineList.add(index,user);
+        for (String user : users) {
+            if (!user.equals(CurrentClient.getName())) {
+                onlineList.add(index, user);
             }
         }
     }

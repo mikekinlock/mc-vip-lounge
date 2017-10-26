@@ -1,9 +1,9 @@
 package com.mc.vip.lounge.clientchat.model;
 
-import javax.swing.*;
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
 
 public class ClientChatRoom {
 

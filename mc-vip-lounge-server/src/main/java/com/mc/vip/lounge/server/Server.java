@@ -53,6 +53,8 @@ public class Server {
 
         private Logger SERVER_LOG = Logger.getLogger(Server.Handler.class.getName());
 
+        private static final String USER_NAME = "new_user_name";
+        private static final String CLIENT_ACCEPTED_INFO = "name_accepted";
         private static final String SERVER_MESSAGE_IDENTIFICATION = "server_message_json";
         private static final String SENDER_IDENTIFICATION = "sender_name";
         private static final String CLIENT_MESSAGE_IDENTIFICATION = "client_message";
@@ -84,7 +86,7 @@ public class Server {
                 // checking for the existence of a name and adding the name
                 // must be done while locking the set of names.
                 while (true) {
-                    out.println("SUBMITNAME");
+                    out.println(USER_NAME);
                     name = in.readLine();
                     if (name == null) {
                         return;
@@ -97,10 +99,9 @@ public class Server {
                     }
                 }
 
-                // Now that a successful name has been chosen, add the
-                // socket's print writer to the set of all writers so
-                // this client can receive broadcast messages.
-                out.println("NAMEACCEPTED");
+                // After a user has been successful created and added we'll add
+                // a write to each user.
+                out.println(CLIENT_ACCEPTED_INFO);
                 writers.put(name,out);
 
                 // Accept messages from this client and broadcast them.

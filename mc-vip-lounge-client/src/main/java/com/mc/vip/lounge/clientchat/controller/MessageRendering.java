@@ -20,11 +20,12 @@ import com.mc.vip.lounge.clientchat.gui.ClientGUI;
 import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
 import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
-
 public class MessageRendering {
 
     private Logger CLIENT_GROUP_LOG = Logger.getLogger(MessageRendering.class.getName());
 
+    private static final String USER_NAME = "new_user_name";
+    private static final String CLIENT_ACCEPTED_INFO = "name_accepted";
     private static final String CHAT_IDENTIFICATION = "chat_id";
     private static final String CLIENT_MESSAGE_IDENTIFICATION = "client_message";
     private static final String SERVER_MESSAGE_IDENTIFICATION = "server_message_json";
@@ -44,18 +45,18 @@ public class MessageRendering {
     public void listenGroupChat() {
 
         try {
-            addGroupChatListener(out);
+            sendClientMessage(out);
 
             boolean runClient = true;
 
             while (runClient) {
                 String line = in.readLine();
                 boolean hasLine = line != null;
-                if (hasLine && line.startsWith("SUBMITNAME")) {
+                if (hasLine && line.startsWith(USER_NAME)) {
                     String name = gui.getUserName();
                     CurrentClient.setName(name);
                     out.println(name);
-                } else if (hasLine && line.startsWith("NAMEACCEPTED")) {
+                } else if (hasLine && line.startsWith(CLIENT_ACCEPTED_INFO)) {
                     gui.getTextField().setEditable(true);
                 } else if (hasLine && line.startsWith(JSON_BEGIN_IDENTIFICATION + SENDER_IDENTIFICATION)) {
 
@@ -100,7 +101,8 @@ public class MessageRendering {
 
     }
 
-    private void addGroupChatListener(final PrintWriter out) {
+    /** Method wraps message into a JSON and adds chat information to it's JSON request. */
+    private void sendClientMessage(final PrintWriter out) {
 
         gui.getTextField().addActionListener(e -> {
             ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();

@@ -59,7 +59,6 @@ public class Server {
         private static final String SENDER_IDENTIFICATION = "sender_name";
         private static final String CLIENT_MESSAGE_IDENTIFICATION = "client_message";
         private static final String CHAT_IDENTIFICATION = "chat_id";
-        private static final String ALL_USER_ID = "all_users";
 
         private String name;
         private Socket socket;

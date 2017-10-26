@@ -1,4 +1,4 @@
-package com.mc.vip.lounge.clientchat.gui;
+package com.mc.vip.lounge.clientchat.gui.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,12 +9,13 @@ import javax.swing.*;
 import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
 import com.mc.vip.lounge.clientchat.db.user.factory.ClientChatRoomsListFactory;
 import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
+import com.mc.vip.lounge.clientchat.gui.ClientGUI;
 import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
 import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
-public class ClientGraficalInterface {
+public class ClientGUIImpl implements ClientGUI {
 
-    private static ClientGraficalInterface instance;
+    private static ClientGUIImpl instance;
 
     private JFrame frame = new JFrame("Chat");
     private JTextField textField = new JTextField(40);
@@ -24,7 +25,7 @@ public class ClientGraficalInterface {
     private static JList<String> onlineUsers = new JList<>(OnlineUserListFactory.getInstance().getUserList());
     private static JList<String> guiChatRooms = new JList<>(chatRoomNames);
 
-    private ClientGraficalInterface() {
+    private ClientGUIImpl() {
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
@@ -45,9 +46,9 @@ public class ClientGraficalInterface {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    public static ClientGraficalInterface getInstance() {
+    public static ClientGUIImpl getInstance() {
         if (instance == null) {
-            instance = new ClientGraficalInterface();
+            instance = new ClientGUIImpl();
         }
         return instance;
     }
@@ -71,7 +72,7 @@ public class ClientGraficalInterface {
                         .findFirst();
 
                 if (!room.isPresent()) {
-                    addChatRoom(selected, true);
+                    addChatRoom(selected);
 
                 } else {
                     room.get().setSelected(true);
@@ -100,17 +101,16 @@ public class ClientGraficalInterface {
         return textField;
     }
 
-    private void addChatRoom(List<String> selected, boolean isSelected) {
+    private void addChatRoom(List<String> selected) {
         ClientChatRoomsListFactory.getInstance().nonSelected();
         ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
-        addChatRoomToChatList(newChatRoom.getId(),newChatRoom, isSelected);
+        addChatRoomToChatList(newChatRoom.getId(), newChatRoom);
     }
 
-    public void addChatRoomToChatList(String identifier,ClientChatRoom newChatRoom, boolean isSelected) {
+    public void addChatRoomToChatList(String identifier, ClientChatRoom newChatRoom) {
         if (!chatRoomNames.contains(identifier)) {
             ClientChatRoomsListFactory.getInstance().getAllClientChatRooms()
                     .add(newChatRoom);
-            newChatRoom.setSelected(isSelected);
             chatRoomNames.addElement(identifier);
         }
     }

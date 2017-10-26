@@ -15,24 +15,26 @@ public class ClientChatRoom {
     private String conversation;
 
     public ClientChatRoom(@NotNull final String... users) {
-        if (users.length > 0) {
-            this.isSelected = true;
-            this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
-            this.name = NO_NAME;
-            this.conversation = "";
-        }
+
+        this.isSelected = true;
+        this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
+        this.name = NO_NAME;
+        this.conversation = "";
+
     }
-    public void setSelected(final boolean isSelected){
+
+    public void setSelected(final boolean isSelected) {
         this.isSelected = isSelected;
     }
 
-    public void addUsers(String ... users){
+    public void addUsers(String... users) {
         this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
     }
 
     public String getMessages() {
         return this.conversation;
     }
+
     public void addMessage(final String currentMessage) {
         this.conversation = this.conversation + currentMessage;
     }
@@ -41,14 +43,7 @@ public class ClientChatRoom {
         return id;
     }
 
-    public boolean isSelected(){
+    public boolean isSelected() {
         return this.isSelected;
-    }
-
-    public void setName (final String name){
-        this.name = name;
-    }
-    public String getName (){
-        return this.name;
     }
 }

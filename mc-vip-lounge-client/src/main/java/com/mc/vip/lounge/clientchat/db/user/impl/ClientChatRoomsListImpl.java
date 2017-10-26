@@ -1,16 +1,11 @@
 package com.mc.vip.lounge.clientchat.db.user.impl;
 
-import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
-import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
-
-import javax.swing.*;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-//Todo: Verify that chat room name is unique
+import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
+import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
 
 public class ClientChatRoomsListImpl implements ClientChatRoomsList{
 
@@ -45,13 +40,6 @@ public class ClientChatRoomsListImpl implements ClientChatRoomsList{
     public Optional<ClientChatRoom> getRoomById(String id) {
         return chatRooms.stream()
                 .filter(room -> room.getId().equals(id))
-                .findFirst();
-    }
-
-    @Override
-    public Optional<ClientChatRoom> getRoomByName(String name) {
-        return chatRooms.stream()
-                .filter(room -> room.getName().equals(name))
                 .findFirst();
     }
 

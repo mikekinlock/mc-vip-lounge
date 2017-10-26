@@ -16,7 +16,7 @@ import javax.json.JsonReader;
 import com.mc.vip.lounge.clientchat.db.user.ClientChatRoomsList;
 import com.mc.vip.lounge.clientchat.db.user.factory.ClientChatRoomsListFactory;
 import com.mc.vip.lounge.clientchat.db.user.factory.OnlineUserListFactory;
-import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
+import com.mc.vip.lounge.clientchat.gui.ClientGUI;
 import com.mc.vip.lounge.clientchat.model.ClientChatRoom;
 import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
@@ -33,9 +33,9 @@ public class MessageRendering {
 
     private BufferedReader in;
     private PrintWriter out;
-    private ClientGraficalInterface gui;
+    private ClientGUI gui;
 
-    public MessageRendering(final BufferedReader readerIn, final PrintWriter outWriter, final ClientGraficalInterface gui) {
+    public MessageRendering(final BufferedReader readerIn, final PrintWriter outWriter, final ClientGUI gui) {
         this.in = readerIn;
         this.out = outWriter;
         this.gui = gui;
@@ -83,7 +83,7 @@ public class MessageRendering {
                             room.get().addMessage(senderName + ": " + message + "\n");
                             roomsList.getAllClientChatRooms().add(room.get());
                             gui.setTextAreaText(room.get().getMessages());
-                            gui.addChatRoomToChatList(room.get().getId(), room.get(), true);
+                            gui.addChatRoomToChatList(room.get().getId(), room.get());
                         }
                     }
                 } else if (hasLine && line.startsWith("USERS:")) {

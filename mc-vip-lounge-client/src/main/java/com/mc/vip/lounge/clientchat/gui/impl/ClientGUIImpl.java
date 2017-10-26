@@ -62,7 +62,7 @@ public class ClientGUIImpl implements ClientGUI {
 
                 String createdId = selected.stream()
                         .sorted()
-                        .collect(Collectors.joining());
+                        .collect(Collectors.joining(","));
 
                 ClientChatRoomsList chatRooms = ClientChatRoomsListFactory.getInstance();
 
@@ -72,8 +72,7 @@ public class ClientGUIImpl implements ClientGUI {
                         .findFirst();
 
                 if (!room.isPresent()) {
-                    addChatRoom(selected);
-
+                    room = Optional.of(addChatRoom(selected));
                 } else {
                     room.get().setSelected(true);
                 }
@@ -101,10 +100,11 @@ public class ClientGUIImpl implements ClientGUI {
         return textField;
     }
 
-    private void addChatRoom(List<String> selected) {
+    private ClientChatRoom addChatRoom(List<String> selected) {
         ClientChatRoomsListFactory.getInstance().nonSelected();
         ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
         addChatRoomToChatList(newChatRoom.getId(), newChatRoom);
+        return newChatRoom;
     }
 
     public void addChatRoomToChatList(String identifier, ClientChatRoom newChatRoom) {
@@ -112,6 +112,7 @@ public class ClientGUIImpl implements ClientGUI {
             ClientChatRoomsListFactory.getInstance().getAllClientChatRooms()
                     .add(newChatRoom);
             chatRoomNames.addElement(identifier);
+            setTextAreaText(newChatRoom.getMessages());
         }
     }
 

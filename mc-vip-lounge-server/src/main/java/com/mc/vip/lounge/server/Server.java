@@ -7,24 +7,22 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mc.vip.lounge.db.connection.ChatRoomsConnection;
-import com.mc.vip.lounge.db.connection.UsersConnection;
-import com.mc.vip.lounge.db.connection.factory.ChatRoomConnectionFactory;
-import com.mc.vip.lounge.db.connection.factory.UserConnectionFactory;
-import com.mc.vip.lounge.model.ChatRoom;
-import com.mc.vip.lounge.model.ChatUsers;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+
+import com.mc.vip.lounge.db.connection.ChatRoomsConnection;
+import com.mc.vip.lounge.db.connection.factory.ChatRoomConnectionFactory;
+import com.mc.vip.lounge.db.connection.factory.UserConnectionFactory;
+import com.mc.vip.lounge.model.ChatRoom;
+import com.mc.vip.lounge.model.ChatUsers;
 
 /** A multithreaded chat room server. When a client connects the server requests a screen name by sending the client the text "SUBMITNAME",
  * and keeps requesting a name until a unique one is received. After a client submits a unique name, the server acknowledges with

@@ -12,7 +12,6 @@ import javax.swing.*;
 
 import com.mc.vip.lounge.clientchat.gui.ClientGUI;
 import com.mc.vip.lounge.clientchat.gui.factory.ClientGUIFactory;
-import com.mc.vip.lounge.clientchat.gui.impl.ClientGUIImpl;
 
 public class ClientChatController {
 
@@ -48,7 +47,7 @@ public class ClientChatController {
     }
 
     public JFrame getFrame() {
-        return ClientGUIImpl.getInstance().getFrame();
+        return gui.getFrame();
     }
 
 

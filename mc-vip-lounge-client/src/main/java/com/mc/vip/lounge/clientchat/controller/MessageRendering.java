@@ -60,8 +60,9 @@ public class MessageRendering {
                 } else if (hasLine && line.startsWith(JSON_BEGIN_IDENTIFICATION + SENDER_IDENTIFICATION)) {
 
                     try (JsonReader serverJsonReader = Json.createReader(new StringReader(line))) {
-                        JsonObject serverJson = serverJsonReader.readObject();
 
+                        JsonObject serverJson = serverJsonReader.readObject();
+                        ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();
                         String senderName = serverJson.getString(SENDER_IDENTIFICATION);
                         JsonObject jsonObject = (JsonObject) serverJson.get(SERVER_MESSAGE_IDENTIFICATION);
                         String message = jsonObject.getString(CLIENT_MESSAGE_IDENTIFICATION);
@@ -70,8 +71,6 @@ public class MessageRendering {
                         if (jsonObject.containsKey(CHAT_IDENTIFICATION)) {
                             chatId = jsonObject.getString(CHAT_IDENTIFICATION);
                         }
-
-                        ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();
 
                         Optional<ClientChatRoom> room = roomsList.getRoomById(chatId);
 
@@ -82,8 +81,8 @@ public class MessageRendering {
                             room = Optional.of(new ClientChatRoom(chatId.split(",")));
                             room.get().addMessage(senderName + ": " + message + "\n");
                             roomsList.getAllClientChatRooms().add(room.get());
-                            gui.setTextAreaText(room.get().getMessages());
                             gui.addChatRoomToChatList(room.get().getId(), room.get());
+                            gui.setTextAreaText(room.get().getMessages());
                         }
                     }
                 } else if (hasLine && line.startsWith("USERS:")) {

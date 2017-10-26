@@ -168,6 +168,7 @@ public class Server {
             }
         }
 
+        //Todo: Change user list creation to JSON
         private void updateUserList() {
             StringBuilder strB = new StringBuilder();
             strB.append("USERS:");

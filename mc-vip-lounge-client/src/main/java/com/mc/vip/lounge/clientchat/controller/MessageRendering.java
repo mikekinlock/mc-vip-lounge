@@ -52,6 +52,7 @@ public class MessageRendering {
             while (runClient) {
                 String line = in.readLine();
                 boolean hasLine = line != null;
+                // Receive current client name and save it
                 if (hasLine && line.startsWith(USER_NAME)) {
                     String name = gui.getUserName();
                     CurrentClient.setName(name);
@@ -92,6 +93,7 @@ public class MessageRendering {
                     OnlineUserListFactory.getInstance().updateUserList(userList);
 
                 } else if (hasLine && line.startsWith("CLOSE")) {
+                    CLIENT_GROUP_LOG.log(Level.WARNING,"Server is not available anymore");
                     runClient = false;
                 }
             }

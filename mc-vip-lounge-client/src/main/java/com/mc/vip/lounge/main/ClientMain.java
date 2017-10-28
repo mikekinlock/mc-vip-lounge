@@ -2,17 +2,15 @@ package com.mc.vip.lounge.main;
 
 import javax.swing.*;
 
-import com.mc.vip.lounge.network.Client;
+import com.mc.vip.lounge.clientchat.controller.ClientChatController;
 
 public class ClientMain {
 
-    /**
-     * Runs the client as an application with a closeable frame.
-     */
+    /** Runs the client as an application with a closeable frame. */
     public static void main(String[] args) throws Exception {
-        Client client = new Client();
-        client.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        client.getFrame().setVisible(true);
-        client.run();
+        ClientChatController groupChat = new ClientChatController();
+        groupChat.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        groupChat.getFrame().setVisible(true);
+        groupChat.run();
     }
 }

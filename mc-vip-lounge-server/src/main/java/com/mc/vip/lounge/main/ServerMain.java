@@ -6,10 +6,7 @@ import com.mc.vip.lounge.server.Server;
 
 public class ServerMain {
 
-    /**
-     * The appplication main method, which just listens on a port and
-     * spawns handler threads.
-     */
+    /** The application main method, which just listens on a port and spawns handler threads. */
     public static void main(String[] args) throws Exception {
         System.out.println("The chat server is running.");
         ServerSocket listener = new ServerSocket(Server.PORT);
@@ -18,7 +15,7 @@ public class ServerMain {
             while (serverRunning) {
                 Server.Handler handler = new Server.Handler(listener.accept());
                 handler.start();
-                if(handler.isClosed()){
+                if (handler.isClosed()) {
                     serverRunning = false;
                 }
 

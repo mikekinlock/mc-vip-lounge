@@ -18,7 +18,7 @@ have a private and group chats.
 2. Java 8 and thread handling 
 3. SQL 
 
-## How to run the sever and clients
+## How to run the sever and clients:
 1. Download/Clone current code base
 2. Open terminal and move to the project 
 3. Run "mvn clean install"

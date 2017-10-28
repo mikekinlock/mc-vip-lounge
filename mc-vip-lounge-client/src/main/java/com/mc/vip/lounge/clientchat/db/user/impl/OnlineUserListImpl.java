@@ -12,10 +12,9 @@ public class OnlineUserListImpl implements OnlineUserList {
     @Override
     public void updateUserList(final String[] users) {
         onlineList.removeAllElements();
-        int index = 0;
         for (String user : users) {
             if (!user.equals(CurrentClient.getName())) {
-                onlineList.add(index, user);
+                onlineList.add(0, user);
             }
         }
     }

@@ -80,11 +80,11 @@ public class MessageRendering {
                             room.get().addMessage(senderName + ": " + message + "\n");
                             gui.setTextAreaText(room.get().getMessages());
                         } else {
-                            room = Optional.of(new ClientChatRoom(chatId.split(",")));
-                            room.get().addMessage(senderName + ": " + message + "\n");
-                            roomsList.getAllClientChatRooms().add(room.get());
-                            gui.addChatRoomToChatList(room.get().getId(), room.get());
-                            gui.setTextAreaText(room.get().getMessages());
+                            ClientChatRoom chatRoom = new ClientChatRoom(chatId.split(","));
+                            chatRoom.addMessage(senderName + ": " + message + "\n");
+                            roomsList.getAllClientChatRooms().add(chatRoom);
+                            gui.addChatRoomToChatList(chatRoom.getId(), chatRoom);
+                            gui.setTextAreaText(chatRoom.getMessages());
                         }
                     }
                 }

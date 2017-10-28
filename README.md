@@ -16,7 +16,8 @@ have a private and group chats.
 ## Technologies that we are planing to work with:
 1. Maven as an automatic build tool 
 2. Java 8 and thread handling 
-3. SQL 
+3. Java Swing and AWT
+4. SQL 
 
 ## How to run the sever and clients:
 1. Download/Clone current code base

@@ -12,7 +12,7 @@ public class ClientGUIFactory {
 
     public static ClientGUI getInstance() {
         if (instance == null) {
-            instance = ClientGUIImpl.getInstance();
+            instance = new ClientGUIImpl();
         }
         return instance;
     }

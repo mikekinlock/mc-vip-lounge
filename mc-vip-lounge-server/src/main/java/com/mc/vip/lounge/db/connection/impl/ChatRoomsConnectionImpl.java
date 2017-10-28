@@ -10,21 +10,13 @@ import com.mc.vip.lounge.model.ChatRoom;
 public class ChatRoomsConnectionImpl implements ChatRoomsConnection {
 
     private static List<ChatRoom> chatRooms;
-    private static ChatRoomsConnectionImpl instance;
 
-    private ChatRoomsConnectionImpl() {
+    public ChatRoomsConnectionImpl() {
         chatRooms = new CopyOnWriteArrayList<>();
     }
 
-    public static ChatRoomsConnection getInstance() {
-        if (instance == null) {
-            instance = new ChatRoomsConnectionImpl();
-        }
-        return instance;
-    }
-
     @Override
-    public Optional<ChatRoom> getChatRoomById(String id) {
+    public Optional<ChatRoom> getChatRoomById(final String id) {
         return chatRooms.stream()
                 .filter(room -> room.getId().equals(id))
                 .findFirst();

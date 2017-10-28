@@ -12,8 +12,8 @@ public interface ClientGUI {
 
     JTextField getTextField();
 
-    void setTextAreaText(String textArea);
+    void setTextAreaText(final String textArea);
 
-    void addChatRoomToChatList(String identifier, ClientChatRoom newChatRoom);
+    void addChatRoomToChatList(final String identifier, final ClientChatRoom newChatRoom);
 
 }

@@ -9,7 +9,7 @@ public class OnlineUserListFactory {
 
     public static OnlineUserList getInstance() {
         if (userList == null) {
-            userList = OnlineUserListImpl.getUserListInstance();
+            userList = new OnlineUserListImpl();
         }
         return userList;
     }

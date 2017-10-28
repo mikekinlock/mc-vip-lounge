@@ -7,28 +7,20 @@ import javax.validation.constraints.NotNull;
 
 public class ClientChatRoom {
 
-    private static final String NO_NAME = "not_available";
-
     private boolean isSelected;
     private String id;
-    private String name;
     private String conversation;
 
     public ClientChatRoom(@NotNull final String... users) {
 
         this.isSelected = true;
         this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
-        this.name = NO_NAME;
         this.conversation = "";
 
     }
 
     public void setSelected(final boolean isSelected) {
         this.isSelected = isSelected;
-    }
-
-    public void addUsers(String... users) {
-        this.id = Arrays.stream(users).sorted().collect(Collectors.joining(","));
     }
 
     public String getMessages() {

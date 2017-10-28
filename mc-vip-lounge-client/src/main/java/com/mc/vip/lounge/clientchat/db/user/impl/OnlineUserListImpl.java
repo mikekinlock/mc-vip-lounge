@@ -9,15 +9,8 @@ public class OnlineUserListImpl implements OnlineUserList {
 
     private static final DefaultListModel<String> onlineList = new DefaultListModel<>();
 
-    private OnlineUserListImpl() {
-    }
-
-    public static OnlineUserList getUserListInstance() {
-        return new OnlineUserListImpl();
-    }
-
     @Override
-    public void updateUserList(String[] users) {
+    public void updateUserList(final String[] users) {
         onlineList.removeAllElements();
         int index = 0;
         for (String user : users) {

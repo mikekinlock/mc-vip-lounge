@@ -15,17 +15,14 @@ import com.mc.vip.lounge.clientchat.model.CurrentClient;
 
 public class ClientGUIImpl implements ClientGUI {
 
-    private static ClientGUIImpl instance;
-
     private JFrame frame = new JFrame("Chat");
     private JTextField textField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 40);
-    // List to show currently all users
     private static DefaultListModel<String> chatRoomNames = new DefaultListModel<>();
     private static JList<String> onlineUsers = new JList<>(OnlineUserListFactory.getInstance().getUserList());
     private static JList<String> guiChatRooms = new JList<>(chatRoomNames);
 
-    private ClientGUIImpl() {
+    public ClientGUIImpl() {
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, "North");
@@ -46,11 +43,45 @@ public class ClientGUIImpl implements ClientGUI {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    public static ClientGUIImpl getInstance() {
-        if (instance == null) {
-            instance = new ClientGUIImpl();
+    public void setTextAreaText(final String textArea) {
+        messageArea.setText(textArea);
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public JTextField getTextField() {
+        return textField;
+    }
+
+    public void addChatRoomToChatList(final String identifier, final ClientChatRoom newChatRoom) {
+        if (!chatRoomNames.contains(identifier)) {
+            ClientChatRoomsListFactory.getInstance().getAllClientChatRooms()
+                    .add(newChatRoom);
+            chatRoomNames.addElement(identifier);
+            setTextAreaText(newChatRoom.getMessages());
         }
-        return instance;
+    }
+
+    private ClientChatRoom addChatRoom(final List<String> selected) {
+        ClientChatRoomsListFactory.getInstance().nonSelected();
+        ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
+        addChatRoomToChatList(newChatRoom.getId(), newChatRoom);
+        return newChatRoom;
+    }
+
+    private void addChatListListener() {
+        guiChatRooms.addListSelectionListener(e -> {
+            String roomId = guiChatRooms.getSelectedValue();
+            ClientChatRoomsList roomsList = ClientChatRoomsListFactory.getInstance();
+            Optional<ClientChatRoom> room = roomsList.getRoomById(roomId);
+            if (room.isPresent()) {
+                roomsList.nonSelected();
+                room.get().setSelected(true);
+                setTextAreaText(room.get().getMessages());
+            }
+        });
     }
 
     private void addUserListListener() {
@@ -72,52 +103,12 @@ public class ClientGUIImpl implements ClientGUI {
                         .findFirst();
 
                 if (!room.isPresent()) {
-                    room = Optional.of(addChatRoom(selected));
+                   addChatRoom(selected);
                 } else {
                     room.get().setSelected(true);
                 }
             }
         });
-    }
-
-    private void addChatListListener() {
-        guiChatRooms.addListSelectionListener(e -> {
-            String roomId = guiChatRooms.getSelectedValue();
-            Optional<ClientChatRoom> room = ClientChatRoomsListFactory.getInstance().getRoomById(roomId);
-            if (room.isPresent()) {
-                ClientChatRoomsListFactory.getInstance().nonSelected();
-                room.get().setSelected(true);
-                setTextAreaText(room.get().getMessages());
-            }
-        });
-    }
-
-    public JFrame getFrame() {
-        return frame;
-    }
-
-    public JTextField getTextField() {
-        return textField;
-    }
-
-    private ClientChatRoom addChatRoom(List<String> selected) {
-        ClientChatRoomsListFactory.getInstance().nonSelected();
-        ClientChatRoom newChatRoom = new ClientChatRoom(selected.stream().toArray(String[]::new));
-        addChatRoomToChatList(newChatRoom.getId(), newChatRoom);
-        return newChatRoom;
-    }
-
-    public void addChatRoomToChatList(String identifier, ClientChatRoom newChatRoom) {
-        if (!chatRoomNames.contains(identifier)) {
-            ClientChatRoomsListFactory.getInstance().getAllClientChatRooms()
-                    .add(newChatRoom);
-            chatRoomNames.addElement(identifier);
-            setTextAreaText(newChatRoom.getMessages());
-        }
-    }
-
-    public void setTextAreaText(String textArea) {
-        messageArea.setText(textArea);
     }
 
 }

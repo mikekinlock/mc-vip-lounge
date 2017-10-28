@@ -10,18 +10,19 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
-import com.mc.vip.lounge.clientchat.gui.ClientGraficalInterface;
+import com.mc.vip.lounge.clientchat.gui.ClientGUI;
+import com.mc.vip.lounge.clientchat.gui.factory.ClientGUIFactory;
 
 public class ClientChatController {
 
     private BufferedReader in;
     private PrintWriter out;
-    private ClientGraficalInterface gui;
+    private ClientGUI gui;
 
-    private Logger CLIENT_LOG = Logger.getLogger(ClientGraficalInterface.class.getName());
+    private Logger CLIENT_LOG = Logger.getLogger(ClientChatController.class.getName());
 
-    public ClientChatController(){
-        gui = ClientGraficalInterface.getInstance();
+    public ClientChatController() {
+        gui = ClientGUIFactory.getInstance();
     }
 
     /** Connects to the server then enters the processing loop. */
@@ -35,7 +36,7 @@ public class ClientChatController {
                     socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            MessageRendering messageRendering = new MessageRendering(in,out,gui);
+            MessageRendering messageRendering = new MessageRendering(in, out, gui);
             messageRendering.listenGroupChat();
 
         } catch (Exception e) {
@@ -46,9 +47,8 @@ public class ClientChatController {
     }
 
     public JFrame getFrame() {
-        return ClientGraficalInterface.getInstance().getFrame();
+        return gui.getFrame();
     }
-
 
     /** Prompt for and return the address of the server. */
     private String getServerAddress() {

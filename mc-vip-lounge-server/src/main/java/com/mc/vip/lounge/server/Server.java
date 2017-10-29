@@ -153,7 +153,14 @@ public class Server {
                 // This client is going down! Remove its name and its print
                 // writer from the sets, and close its socket.
                 if (name != null) {
-                    names.remove(name);
+                    names.stream().
+                        forEach(
+                            user -> {
+                                if (user.getUsername() == name){
+                                    names.remove(user);
+                                }
+                            }
+                        );
                     updateUserList();
                 }
                 if (out != null) {

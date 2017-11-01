@@ -9,7 +9,7 @@ have private and group chats.
 2. A client can create a group chat by selecting multiple online clients
 
 ## Features that the chat should have in the future:
-1. Connection with an SQL-Data bas
+1. Connection with an SQL-Data base
 2. File sharing 
 3. Video Communication
 

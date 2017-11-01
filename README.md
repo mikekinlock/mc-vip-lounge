@@ -2,10 +2,10 @@
 
 This is just a little study project of two friends to discover existing technologies. 
 The project it self is to create a multi-thread chat in that different clients can 
-have a private and group chats. 
+have private and group chats. 
 
 ## Features that the chat is already having:
-1. A client can create a private by selecting a online
+1. A client can create a private by selecting a online clients
 2. A client can create a group chat by selecting multiple online clients
 
 ## Features that the chat should have in the future:
@@ -27,9 +27,6 @@ have a private and group chats.
     *  Open terminal and run "java -jar <path to project folder>/mc-vip-lounge-server/target/mc-vip-lounge-server-<Version>.jar"
 5. To run a client:
     * Open terminal and run "java -jar <path to project folder>/mc-vip-lounge-client/target/mc-vip-lounge-client-<Version>.jar"
-
-
-
 
 ## Development environment 
 1. Java 8 

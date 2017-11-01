@@ -5,7 +5,7 @@ The project it self is to create a multi-thread chat in that different clients c
 have private and group chats. 
 
 ## Features that the chat is already having:
-1. A client can create a private by selecting a online clients
+1. A client can create a private by selecting a online client
 2. A client can create a group chat by selecting multiple online clients
 
 ## Features that the chat should have in the future:

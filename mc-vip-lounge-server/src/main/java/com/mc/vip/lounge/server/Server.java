@@ -156,7 +156,7 @@ public class Server {
                     names.stream().
                         forEach(
                             user -> {
-                                if (user.getUsername() == name){
+                                if (user.getUsername().equals(name)){
                                     names.remove(user);
                                 }
                             }
